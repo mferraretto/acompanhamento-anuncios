@@ -28,29 +28,81 @@ document.querySelectorAll('#menuTabs button').forEach(btn => {
 async function loadAnuncios() {
   const container = document.getElementById('listaAnunciosContent');
   const snap = await db.collection('anuncios').get();
- const table = document.createElement('table');
+
+  const table = document.createElement('table');
   const headerRow = document.createElement('tr');
-  ['Nome', 'SKU'].forEach(text => {
+  ['SKU', 'Nome', 'Descrição', 'Peso', 'Comp.', 'Larg.', 'Altura', 'Imagem de Capa', 'Imagens Extras'].forEach(text => {
     const th = document.createElement('th');
     th.textContent = text;
     headerRow.appendChild(th);
   });
   table.appendChild(headerRow);
+
   snap.forEach(doc => {
     const data = doc.data();
-    const nome = data['Nome do Produto'] || data.nome || data.name || '';
-const tr = document.createElement('tr');
-    const nomeTd = document.createElement('td');
-    nomeTd.textContent = sanitize(nome);
-    tr.appendChild(nomeTd);
+    const tr = document.createElement('tr');
 
+    // SKU
     const skuTd = document.createElement('td');
     skuTd.textContent = sanitize(doc.id);
     tr.appendChild(skuTd);
 
+    // Nome
+    const nomeTd = document.createElement('td');
+    nomeTd.textContent = sanitize(data.name || data.nome || '');
+    tr.appendChild(nomeTd);
+
+    // Descrição
+    const descTd = document.createElement('td');
+    descTd.textContent = sanitize(data.description || '');
+    tr.appendChild(descTd);
+
+    // Peso
+    const pesoTd = document.createElement('td');
+    pesoTd.textContent = sanitize(data.weight || data.peso || '');
+    tr.appendChild(pesoTd);
+
+    // Comprimento
+    const compTd = document.createElement('td');
+    compTd.textContent = sanitize(data.length || data.comprimento || '');
+    tr.appendChild(compTd);
+
+    // Largura
+    const largTd = document.createElement('td');
+    largTd.textContent = sanitize(data.width || data.largura || '');
+    tr.appendChild(largTd);
+
+    // Altura
+    const altTd = document.createElement('td');
+    altTd.textContent = sanitize(data.height || data.altura || '');
+    tr.appendChild(altTd);
+
+    // Imagem de Capa
+    const imgTd = document.createElement('td');
+    if (data.main_image || data.imagem) {
+      const img = document.createElement('img');
+      img.src = sanitize(data.main_image || data.imagem);
+      img.width = 50;
+      imgTd.appendChild(img);
+    }
+    tr.appendChild(imgTd);
+
+    // Imagens Extras
+    const extrasTd = document.createElement('td');
+    const extras = data.secondary_images || [];
+    extras.forEach(url => {
+      const img = document.createElement('img');
+      img.src = sanitize(url);
+      img.width = 30;
+      img.style.margin = '2px';
+      extrasTd.appendChild(img);
+    });
+    tr.appendChild(extrasTd);
+
     table.appendChild(tr);
   });
-   container.innerHTML = '';
+
+  container.innerHTML = '';
   container.appendChild(table);
 }
 
