@@ -3,3 +3,14 @@ h1, h2 { color: #d44; }
 input, button { margin: 5px 0; padding: 8px; width: 100%; max-width: 500px; }
 section { background: white; padding: 20px; margin: 20px 0; border-radius: 10px; box-shadow: 0 2px 6px #ccc; }
 .table-preview { max-width: 100%; overflow-x: auto; margin-top: 10px; }
+
+nav {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+nav button {
+  padding: 8px 12px;
+}
+.tab-section { display: none; }
+.tab-section.active { display: block; }
