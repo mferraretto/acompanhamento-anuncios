@@ -16,11 +16,9 @@ document.getElementById('btnSalvarDesempenho').addEventListener('click', async (
   const sheet = workbook.Sheets[workbook.SheetNames[0]];
   const rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
 
-  // Campos esperados da planilha:
-  // SKU | Visualizações | Cliques | Vendas | Conversão (%) | Receita Total
   const table = document.createElement('table');
   const headerRow = document.createElement('tr');
-  ['SKU', 'Visualizações', 'Cliques', 'Vendas', 'Conversão (%)', 'Receita'].forEach(col => {
+  ['SKU', 'Visualizações', 'Cliques', 'Vendas', 'CTR', 'Receita'].forEach(col => {
     const th = document.createElement('th');
     th.textContent = col;
     headerRow.appendChild(th);
@@ -32,30 +30,33 @@ document.getElementById('btnSalvarDesempenho').addEventListener('click', async (
     if (!sku) continue;
 
     const dados = {
+      sku,
       visualizacoes: row['Total de visualizações'] || row['Visualizações'] || 0,
       cliques: row['Total de cliques'] || row['Cliques'] || 0,
       vendas: row['Total de pedidos pagos'] || row['Vendas'] || 0,
       conversao: row['Taxa de conversão (%)'] || row['Conversão (%)'] || 0,
+      ctr: row['CTR'] || row['Taxa de conversão (%)'] || '0%',
       receita: row['Valor total do pedido'] || row['Receita'] || 0,
-      dataRegistro: new Date().toISOString()
+      dataRegistro: new Date().toISOString(),
+      data: firebase.firestore.Timestamp.now()
     };
 
-    // Exibir na tabela visual
+    // Exibir visualmente na tabela
     const tr = document.createElement('tr');
-    [sku, dados.visualizacoes, dados.cliques, dados.vendas, dados.conversao, dados.receita].forEach(val => {
+    [sku, dados.visualizacoes, dados.cliques, dados.vendas, dados.ctr, dados.receita].forEach(val => {
       const td = document.createElement('td');
       td.textContent = sanitize(val);
       tr.appendChild(td);
     });
     table.appendChild(tr);
 
-    // Atualizar Firebase (coleção: 'anuncios', doc ID: SKU)
-    await db.collection('anuncios').doc(sku).set({
-      desempenho: dados
-    }, { merge: true });
+    // Atualizar Firebase em duas coleções (anuncios e desempenho)
+    await db.collection('anuncios').doc(sku).set({ desempenho: dados }, { merge: true });
+    await db.collection('desempenho').doc(sku).set(dados, { merge: true });
   }
 
   preview.innerHTML = '';
   preview.appendChild(table);
   alert('Dados de desempenho salvos com sucesso!');
 });
+
