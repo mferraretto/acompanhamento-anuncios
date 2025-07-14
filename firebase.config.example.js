@@ -1,8 +1,8 @@
 window.firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyAJHISEca3wibw92Bw6UQCpQuyhtkjAoWE",
+  authDomain: "acompanhamento-anuncios.firebaseapp.com",
+  projectId: "acompanhamento-anuncios",
+  storageBucket: "acompanhamento-anuncios.appspot.com",
+  messagingSenderId: "993424162956",
+  appId: "1:993424162956:web:37bb9a39d8aee076cdfba9"
 };
