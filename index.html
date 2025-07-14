@@ -9,6 +9,13 @@
 </head>
 <body>
   <h1>🛠 Cadastro de Anúncio - Shopee</h1>
+ <nav id="menuTabs">
+    <button data-section="historico">Histórico</button>
+    <button data-section="listaAnuncios">Lista de Anúncios</button>
+    <button data-section="evolucao">Evolução</button>
+    <button data-section="relatorio">Relatório</button>
+    <button data-section="comparativo">Comparativo</button>
+  </nav>
 
   <section>
     <h2>📥 Importar Planilhas da Shopee</h2>
@@ -36,6 +43,30 @@
     </form>
     <div id="msgCadastro"></div>
   </section>
+ <section id="historico" class="tab-section">
+    <h2>Histórico</h2>
+    <div id="historicoContent"></div>
+  </section>
+
+  <section id="listaAnuncios" class="tab-section">
+    <h2>Lista de Anúncios</h2>
+    <div id="listaAnunciosContent"></div>
+  </section>
+
+  <section id="evolucao" class="tab-section">
+    <h2>Evolução</h2>
+    <p>Em desenvolvimento...</p>
+  </section>
+
+  <section id="relatorio" class="tab-section">
+    <h2>Relatório</h2>
+    <p>Em desenvolvimento...</p>
+  </section>
+
+  <section id="comparativo" class="tab-section">
+    <h2>Comparativo</h2>
+    <p>Em desenvolvimento...</p>
+  </section>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -44,5 +75,7 @@
   <script src="importShopee.js"></script>
   <script src="importPedidos.js"></script>
   <script src="app.js"></script>
+    <script src="tabs.js"></script>
+
 </body>
 </html>
