@@ -12,8 +12,14 @@ const sections = {
 };
 
 function showSection(id) {
-  Object.values(sections).forEach(sec => sec.classList.remove('active'));
-  sections[id].classList.add('active');
+  document.querySelectorAll(".tab-section").forEach(section => {
+    section.classList.remove("active");
+  });
+
+  const activeSection = document.getElementById(id);
+  if (activeSection) {
+    activeSection.classList.add("active");
+  }
 }
 
 document.querySelectorAll('#menuTabs button').forEach(btn => {
@@ -27,14 +33,17 @@ document.querySelectorAll('#menuTabs button').forEach(btn => {
       loadHistorico();
     } else if (id === 'alteracoes') {
       loadAlteracoes();
-    } else if (id === 'cadastro') {
-      // Nenhuma ação necessária, apenas mostra a aba
+    } else if (id === 'desempenho') {
+      // você pode adicionar uma função loadDesempenho() aqui, se quiser
     }
-    else if (id === 'desempenho') {
-  loadDesempenho();
-}
   });
 });
+
+// Ativar aba "cadastro" por padrão
+document.addEventListener("DOMContentLoaded", () => {
+  showSection('cadastro');
+});
+
 
 
 async function loadAnuncios() {
