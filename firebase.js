@@ -8,3 +8,4 @@ let firebaseConfig = typeof window !== 'undefined' && window.firebaseConfig ? wi
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+export { db };
