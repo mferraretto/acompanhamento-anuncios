@@ -7,7 +7,8 @@ const sections = {
   evolucao: document.getElementById('evolucao'),
   relatorio: document.getElementById('relatorio'),
   comparativo: document.getElementById('comparativo'),
-  alteracoes: document.getElementById('alteracoes')
+ alteracoes: document.getElementById('alteracoes'),
+  desempenho: document.getElementById('desempenho')
 
 };
 
