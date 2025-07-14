@@ -1,3 +1,5 @@
+const sanitize = (v) => (v == null ? '' : String(v));
+
 const sections = {
   historico: document.getElementById('historico'),
   listaAnuncios: document.getElementById('listaAnuncios'),
@@ -26,26 +28,63 @@ document.querySelectorAll('#menuTabs button').forEach(btn => {
 async function loadAnuncios() {
   const container = document.getElementById('listaAnunciosContent');
   const snap = await db.collection('anuncios').get();
-  let html = '<table><tr><th>Nome</th><th>SKU</th></tr>';
+ const table = document.createElement('table');
+  const headerRow = document.createElement('tr');
+  ['Nome', 'SKU'].forEach(text => {
+    const th = document.createElement('th');
+    th.textContent = text;
+    headerRow.appendChild(th);
+  });
+  table.appendChild(headerRow);
   snap.forEach(doc => {
     const data = doc.data();
     const nome = data['Nome do Produto'] || data.nome || '';
-    html += `<tr><td>${nome}</td><td>${doc.id}</td></tr>`;
+const tr = document.createElement('tr');
+    const nomeTd = document.createElement('td');
+    nomeTd.textContent = sanitize(nome);
+    tr.appendChild(nomeTd);
+
+    const skuTd = document.createElement('td');
+    skuTd.textContent = sanitize(doc.id);
+    tr.appendChild(skuTd);
+
+    table.appendChild(tr);
   });
-  html += '</table>';
-  container.innerHTML = html;
+   container.innerHTML = '';
+  container.appendChild(table);
 }
 
 async function loadHistorico() {
   const container = document.getElementById('historicoContent');
   const snap = await db.collection('pedidos').get();
-  let html = '<table><tr><th>SKU</th><th>Status</th><th>Valor</th></tr>';
+  const table = document.createElement('table');
+  const headerRow = document.createElement('tr');
+  ['SKU', 'Status', 'Valor'].forEach(text => {
+    const th = document.createElement('th');
+    th.textContent = text;
+    headerRow.appendChild(th);
+  });
+  table.appendChild(headerRow);
   snap.forEach(doc => {
     const d = doc.data();
-    html += `<tr><td>${d['SKU'] || ''}</td><td>${d['Status'] || ''}</td><td>${d['Valor'] || ''}</td></tr>`;
+   const tr = document.createElement('tr');
+
+    const skuTd = document.createElement('td');
+    skuTd.textContent = sanitize(d['SKU']);
+    tr.appendChild(skuTd);
+
+    const statusTd = document.createElement('td');
+    statusTd.textContent = sanitize(d['Status']);
+    tr.appendChild(statusTd);
+
+    const valorTd = document.createElement('td');
+    valorTd.textContent = sanitize(d['Valor']);
+    tr.appendChild(valorTd);
+
+    table.appendChild(tr);
   });
-  html += '</table>';
-  container.innerHTML = html;
+ container.innerHTML = '';
+  container.appendChild(table);
 }
 
 // Show default tab
