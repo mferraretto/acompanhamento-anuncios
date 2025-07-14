@@ -23,7 +23,10 @@ document.getElementById('btnSalvarShopeePlanilhas').addEventListener('click', as
       const lower = file.name.toLowerCase();
       const rows = await readExcel(file);
       for (const row of rows) {
-        const productId = row['ID do Produto'] || row['et_title_product_id'];
+let productId = row['ID do Produto'];
+        if (!productId && lower.includes('shipping')) {
+          productId = row['SKU'] || row['item_sku'] || row['SKU de referência'];
+        }
         if (!productId) continue;
         if (!merged[productId]) merged[productId] = {};
 
