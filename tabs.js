@@ -1,4 +1,5 @@
 import { sanitize } from './utils.js';
+import { db } from './firebase.js';
 
 const sections = {
   cadastro: document.getElementById('cadastro'),
