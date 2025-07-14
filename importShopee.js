@@ -23,7 +23,7 @@ document.getElementById('btnSalvarShopeePlanilhas').addEventListener('click', as
       const lower = file.name.toLowerCase();
       const rows = await readExcel(file);
       for (const row of rows) {
-let productId = row['ID do Produto'];
+let productId = row['ID do Produto'] ?? row['et_title_product_id'];
         if (!productId && lower.includes('shipping')) {
           productId = row['SKU'] || row['item_sku'] || row['SKU de referência'];
         }
@@ -45,10 +45,22 @@ let productId = row['ID do Produto'];
           });
           if (secondary.length) merged[productId].secondary_images = secondary;
         } else if (lower.includes('shipping')) {
-         merged[productId].weight = row['weight'] || row['Peso do Produto/kg'];
-          merged[productId].length = row['length'] || row['Comprimento'];
-          merged[productId].width = row['width'] || row['Largura'];
-          merged[productId].height = row['height'] || row['Altura'];
+         merged[productId].weight =
+            row['weight'] ||
+            row['Peso do Produto/kg'] ||
+            row['et_title_product_weight'];
+          merged[productId].length =
+            row['length'] ||
+            row['Comprimento'] ||
+            row['et_title_product_length'];
+          merged[productId].width =
+            row['width'] ||
+            row['Largura'] ||
+            row['et_title_product_width'];
+          merged[productId].height =
+            row['height'] ||
+            row['Altura'] ||
+            row['et_title_product_height'];
         }
       }
     }
