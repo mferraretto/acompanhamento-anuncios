@@ -1,4 +1,5 @@
 // Parse and merge Shopee spreadsheets (basic, media and shipping)
+const sanitize = (v) => (v == null ? '' : String(v));
 document.getElementById('btnSalvarShopeePlanilhas').addEventListener('click', async () => {
   try {
     const input = document.getElementById('inputShopeePlanilhas');
@@ -49,22 +50,53 @@ document.getElementById('btnSalvarShopeePlanilhas').addEventListener('click', as
     }
   
 
-   let html = '<table><tr><th>ID</th><th>SKU</th><th>Nome</th><th>Peso</th><th>Medidas</th><th>Imagem</th></tr>';
-   for (const productId in merged) {
-      const item = merged[productId];
-      html += `<tr>
-        <td>${productId}</td>
-        <td>${item.sku || ''}</td>
-        <td>${item.name || ''}</td>
-        <td>${item.weight || ''}</td>
-        <td>${(item.length || '')} x ${(item.width || '')} x ${(item.height || '')}</td>
-        <td><img src="${item.main_image || ''}" width="50"/></td>
-      </tr>`;
+   const table = document.createElement('table');
+  const headerRow = document.createElement('tr');
+  ['ID', 'SKU', 'Nome', 'Peso', 'Medidas', 'Imagem'].forEach(text => {
+    const th = document.createElement('th');
+    th.textContent = text;
+    headerRow.appendChild(th);
+  });
+  table.appendChild(headerRow);
 
-   await db.collection('anuncios').doc(productId).set(item, { merge: true });
-    }
-    html += '</table>';
-    preview.innerHTML = html;
+  for (const productId in merged) {
+    const item = merged[productId];
+    const row = document.createElement('tr');
+
+    const idTd = document.createElement('td');
+    idTd.textContent = sanitize(productId);
+    row.appendChild(idTd);
+
+    const skuTd = document.createElement('td');
+    skuTd.textContent = sanitize(item.sku);
+    row.appendChild(skuTd);
+
+    const nameTd = document.createElement('td');
+    nameTd.textContent = sanitize(item.name);
+    row.appendChild(nameTd);
+
+    const weightTd = document.createElement('td');
+    weightTd.textContent = sanitize(item.weight);
+    row.appendChild(weightTd);
+
+    const measureTd = document.createElement('td');
+    measureTd.textContent = `${sanitize(item.length)} x ${sanitize(item.width)} x ${sanitize(item.height)}`;
+    row.appendChild(measureTd);
+
+    const imgTd = document.createElement('td');
+    const img = document.createElement('img');
+    img.src = sanitize(item.main_image);
+    img.width = 50;
+    imgTd.appendChild(img);
+    row.appendChild(imgTd);
+
+    table.appendChild(row);
+
+    await db.collection('anuncios').doc(productId).set(item, { merge: true });
+  }
+
+  preview.innerHTML = '';
+  preview.appendChild(table);
     alert('Anúncios salvos no Firebase!');
   } catch (err) {
     console.error('Erro ao salvar planilhas', err);
