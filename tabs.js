@@ -1,4 +1,4 @@
-const sanitize = (v) => (v == null ? '' : String(v));
+import { sanitize } from './utils.js';
 
 const sections = {
   historico: document.getElementById('historico'),
