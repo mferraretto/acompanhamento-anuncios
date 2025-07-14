@@ -1,5 +1,5 @@
 // Parse and merge Shopee spreadsheets (basic, media and shipping)
-const sanitize = (v) => (v == null ? '' : String(v));
+import { sanitize } from './utils.js';
 const removeInvalid = (obj) => {
   const out = {};
   for (const [k, v] of Object.entries(obj)) {
