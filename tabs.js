@@ -1,6 +1,7 @@
 import { sanitize } from './utils.js';
 
 const sections = {
+  cadastro: document.getElementById('cadastro'),
   historico: document.getElementById('historico'),
   listaAnuncios: document.getElementById('listaAnuncios'),
   evolucao: document.getElementById('evolucao'),
@@ -19,15 +20,19 @@ document.querySelectorAll('#menuTabs button').forEach(btn => {
   btn.addEventListener('click', () => {
     const id = btn.dataset.section;
     showSection(id);
+
     if (id === 'listaAnuncios') {
       loadAnuncios();
     } else if (id === 'historico') {
       loadHistorico();
     } else if (id === 'alteracoes') {
       loadAlteracoes();
+    } else if (id === 'cadastro') {
+      // Nenhuma ação necessária, apenas mostra a aba
     }
   });
 });
+
 
 async function loadAnuncios() {
   const container = document.getElementById('listaAnunciosContent');
