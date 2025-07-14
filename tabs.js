@@ -30,6 +30,9 @@ document.querySelectorAll('#menuTabs button').forEach(btn => {
     } else if (id === 'cadastro') {
       // Nenhuma ação necessária, apenas mostra a aba
     }
+    else if (id === 'desempenho') {
+  loadDesempenho();
+}
   });
 });
 
