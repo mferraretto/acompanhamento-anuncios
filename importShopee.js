@@ -21,16 +21,16 @@ document.getElementById('btnSalvarShopeePlanilhas').addEventListener('click', as
       const lower = file.name.toLowerCase();
       const rows = await readExcel(file);
       for (const row of rows) {
-        const key = row['et_title_product_id'];
-        if (!key) continue;
-        if (!merged[key]) merged[key] = {};
+        const productId = row['et_title_product_id'];
+        if (!productId) continue;
+        if (!merged[productId]) merged[productId] = {};
 
         if (lower.includes('basic')) {
-          merged[key].sku = row['SKU'] || row['item_sku'] || row['SKU de referência'];
-          merged[key].name = row['name'] || row['Nome do Produto'];
-          merged[key].description = row['description'] || row['Descrição do Produto'];
+          merged[productId].sku = row['SKU'] || row['item_sku'] || row['SKU de referência'];
+          merged[productId].name = row['name'] || row['Nome do Produto'];
+          merged[productId].description = row['description'] || row['Descrição do Produto'];
         } else if (lower.includes('media')) {
-          merged[key].main_image = row['main_image'] || row['Imagem de capa'];
+          merged[productId].main_image = row['main_image'] || row['Imagem de capa'];
           const secondary = [];
           Object.keys(row).forEach(k => {
             const lk = k.toLowerCase();
@@ -38,22 +38,22 @@ document.getElementById('btnSalvarShopeePlanilhas').addEventListener('click', as
               secondary.push(row[k]);
             }
           });
-          if (secondary.length) merged[key].secondary_images = secondary;
+          if (secondary.length) merged[productId].secondary_images = secondary;
         } else if (lower.includes('shipping')) {
-          merged[key].weight = row['weight'] || row['Peso do Produto/kg'];
-          merged[key].length = row['length'] || row['Comprimento'];
-          merged[key].width = row['width'] || row['Largura'];
-          merged[key].height = row['height'] || row['Altura'];
+         merged[productId].weight = row['weight'] || row['Peso do Produto/kg'];
+          merged[productId].length = row['length'] || row['Comprimento'];
+          merged[productId].width = row['width'] || row['Largura'];
+          merged[productId].height = row['height'] || row['Altura'];
         }
       }
     }
   
 
    let html = '<table><tr><th>ID</th><th>SKU</th><th>Nome</th><th>Peso</th><th>Medidas</th><th>Imagem</th></tr>';
-    for (const key in merged) {
-      const item = merged[key];
+   for (const productId in merged) {
+      const item = merged[productId];
       html += `<tr>
-        <td>${key}</td>
+        <td>${productId}</td>
         <td>${item.sku || ''}</td>
         <td>${item.name || ''}</td>
         <td>${item.weight || ''}</td>
@@ -61,7 +61,7 @@ document.getElementById('btnSalvarShopeePlanilhas').addEventListener('click', as
         <td><img src="${item.main_image || ''}" width="50"/></td>
       </tr>`;
 
-   await db.collection('anuncios').doc(key).set(item, { merge: true });
+   await db.collection('anuncios').doc(productId).set(item, { merge: true });
     }
     html += '</table>';
     preview.innerHTML = html;
