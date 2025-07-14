@@ -8,41 +8,46 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>🛠 Cadastro de Anúncio - Shopee</h1>
- <nav id="menuTabs">
+  <nav id="menuTabs">
+    <button data-section="cadastro">🛠 Cadastro</button>
     <button data-section="historico">Histórico</button>
     <button data-section="listaAnuncios">Lista de Anúncios</button>
     <button data-section="evolucao">Evolução</button>
     <button data-section="relatorio">Relatório</button>
     <button data-section="comparativo">Comparativo</button>
-     <button data-section="alteracoes">📈 Alterações</button>
+    <button data-section="alteracoes">📈 Alterações</button>
   </nav>
 
-  <section>
-    <h2>📥 Importar Planilhas da Shopee</h2>
-    <input type="file" id="inputShopeePlanilhas" accept=".xlsx" multiple />
-    <div id="previewShopeePlanilhas" class="table-preview"></div>
-    <button id="btnSalvarShopeePlanilhas">Salvar Anúncios</button>
-  </section>
+  <!-- ✅ Aba de Cadastro -->
+  <section id="cadastro" class="tab-section">
+    <h1>🛠 Cadastro de Anúncio - Shopee</h1>
 
-  <section>
-    <h2>📥 Importar Planilha de Pedidos</h2>
-    <input type="file" id="inputPlanilhaPedidos" accept=".xlsx" />
-    <div id="previewPedidos" class="table-preview"></div>
-    <button id="savePedidosBtn">Salvar Pedidos</button>
-  </section>
+    <section>
+      <h2>📥 Importar Planilhas da Shopee</h2>
+      <input type="file" id="inputShopeePlanilhas" accept=".xlsx" multiple />
+      <div id="previewShopeePlanilhas" class="table-preview"></div>
+      <button id="btnSalvarShopeePlanilhas">Salvar Anúncios</button>
+    </section>
 
-  <section>
-    <h2>✍️ Cadastro Manual</h2>
-    <form id="formCadastro">
-      <input type="text" placeholder="Nome do Produto" name="nome" required />
-      <input type="text" placeholder="Link Shopee" name="link" required />
-      <input type="text" placeholder="SKU" name="sku" required />
-      <input type="text" placeholder="URL da Imagem" name="imagem" required />
-      <input type="date" name="data" required />
-      <button type="submit">Cadastrar Manualmente</button>
-    </form>
-    <div id="msgCadastro"></div>
+    <section>
+      <h2>📥 Importar Planilha de Pedidos</h2>
+      <input type="file" id="inputPlanilhaPedidos" accept=".xlsx" />
+      <div id="previewPedidos" class="table-preview"></div>
+      <button id="savePedidosBtn">Salvar Pedidos</button>
+    </section>
+
+    <section>
+      <h2>✍️ Cadastro Manual</h2>
+      <form id="formCadastro">
+        <input type="text" placeholder="Nome do Produto" name="nome" required />
+        <input type="text" placeholder="Link Shopee" name="link" required />
+        <input type="text" placeholder="SKU" name="sku" required />
+        <input type="text" placeholder="URL da Imagem" name="imagem" required />
+        <input type="date" name="data" required />
+        <button type="submit">Cadastrar Manualmente</button>
+      </form>
+      <div id="msgCadastro"></div>
+    </section>
   </section>
  <section id="historico" class="tab-section">
     <h2>Histórico</h2>
