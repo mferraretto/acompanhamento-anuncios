@@ -13,8 +13,8 @@ document.getElementById('btnSalvarShopeePlanilhas').addEventListener('click', as
       const buffer = await file.arrayBuffer();
       const workbook = XLSX.read(buffer, { type: 'buffer' });
       const sheet = workbook.Sheets[workbook.SheetNames[0]];
-      // Skip technical header row (first row) when parsing
-      return XLSX.utils.sheet_to_json(sheet, { defval: '', range: 1 });
+      // Skip metadata rows (first two rows) and use the third row as header
+      return XLSX.utils.sheet_to_json(sheet, { defval: '', range: 2 });
     };
 
  const merged = {};
@@ -23,7 +23,7 @@ document.getElementById('btnSalvarShopeePlanilhas').addEventListener('click', as
       const lower = file.name.toLowerCase();
       const rows = await readExcel(file);
       for (const row of rows) {
-        const productId = row['et_title_product_id'];
+        const productId = row['ID do Produto'] || row['et_title_product_id'];
         if (!productId) continue;
         if (!merged[productId]) merged[productId] = {};
 
