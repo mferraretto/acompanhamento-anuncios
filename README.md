@@ -8,3 +8,5 @@ Este projeto exige um arquivo `firebase.config.js` com as chaves do seu projeto 
 Antes de executar o aplicativo, garanta que o `firebase.config.js` exista. Caso o arquivo esteja ausente, o *service worker* pode exibir um erro 404 ao tenta‑lo.
 
 O `firebase.config.js` está listado no `.gitignore`. **Nunca** envie suas credenciais reais para o repositório.
+
+O arquivo `sw-register.js` registra automaticamente `service-worker.js` quando o navegador oferece suporte. Mantenha esse script referenciado no `index.html` para garantir o funcionamento offline.
