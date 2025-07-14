@@ -104,3 +104,30 @@ nav button {
   #listaAnunciosContent td:nth-child(8)::before { content: "Imagem de Capa"; }
   #listaAnunciosContent td:nth-child(9)::before { content: "Imagens Extras"; }
 }
+#alteracoesContent table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+#alteracoesContent th,
+#alteracoesContent td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  vertical-align: top;
+  text-align: left;
+}
+
+#alteracoesContent th {
+  background-color: #f0f0f0;
+  font-weight: bold;
+}
+
+#alteracoesContent tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+#alteracoesContent tr:hover {
+  background-color: #eef;
+}
