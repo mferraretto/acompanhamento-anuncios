@@ -5,7 +5,9 @@ const sections = {
   listaAnuncios: document.getElementById('listaAnuncios'),
   evolucao: document.getElementById('evolucao'),
   relatorio: document.getElementById('relatorio'),
-  comparativo: document.getElementById('comparativo')
+  comparativo: document.getElementById('comparativo'),
+  alteracoes: document.getElementById('alteracoes')
+
 };
 
 function showSection(id) {
@@ -21,6 +23,8 @@ document.querySelectorAll('#menuTabs button').forEach(btn => {
       loadAnuncios();
     } else if (id === 'historico') {
       loadHistorico();
+    } else if (id === 'alteracoes') {
+      loadAlteracoes();
     }
   });
 });
@@ -136,6 +140,54 @@ async function loadHistorico() {
     table.appendChild(tr);
   });
  container.innerHTML = '';
+  container.appendChild(table);
+}
+async function loadAlteracoes() {
+  const container = document.getElementById('alteracoesContent');
+  const snap = await db.collection('alteracoes').orderBy('data', 'desc').limit(100).get();
+
+  const table = document.createElement('table');
+  const headerRow = document.createElement('tr');
+  ['SKU', 'Campo', 'De', 'Para', 'Origem', 'Data'].forEach(text => {
+    const th = document.createElement('th');
+    th.textContent = text;
+    headerRow.appendChild(th);
+  });
+  table.appendChild(headerRow);
+
+  snap.forEach(doc => {
+    const d = doc.data();
+    const tr = document.createElement('tr');
+
+    const skuTd = document.createElement('td');
+    skuTd.textContent = sanitize(d.sku);
+    tr.appendChild(skuTd);
+
+    const campoTd = document.createElement('td');
+    campoTd.textContent = sanitize(d.campo);
+    tr.appendChild(campoTd);
+
+    const deTd = document.createElement('td');
+    deTd.textContent = sanitize(d.de);
+    tr.appendChild(deTd);
+
+    const paraTd = document.createElement('td');
+    paraTd.textContent = sanitize(d.para);
+    tr.appendChild(paraTd);
+
+    const origemTd = document.createElement('td');
+    origemTd.textContent = sanitize(d.origem);
+    tr.appendChild(origemTd);
+
+    const dataTd = document.createElement('td');
+    const dataFormatada = new Date(d.data).toLocaleString('pt-BR');
+    dataTd.textContent = dataFormatada;
+    tr.appendChild(dataTd);
+
+    table.appendChild(tr);
+  });
+
+  container.innerHTML = '';
   container.appendChild(table);
 }
 
