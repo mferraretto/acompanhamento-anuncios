@@ -38,7 +38,7 @@ async function loadAnuncios() {
   table.appendChild(headerRow);
   snap.forEach(doc => {
     const data = doc.data();
-    const nome = data['Nome do Produto'] || data.nome || '';
+    const nome = data['Nome do Produto'] || data.nome || data.name || '';
 const tr = document.createElement('tr');
     const nomeTd = document.createElement('td');
     nomeTd.textContent = sanitize(nome);
