@@ -1,0 +1,13 @@
+{
+  "name": "Acompanhamento de Anúncios",
+  "short_name": "Anúncios",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "description": "Sistema PWA para acompanhamento e cadastro de anúncios Shopee",
+  "icons": [{
+    "src": "icon-192.png",
+    "sizes": "192x192",
+    "type": "image/png"
+  }]
+}

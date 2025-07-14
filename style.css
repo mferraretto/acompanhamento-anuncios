@@ -1,0 +1,5 @@
+body { font-family: Arial; padding: 20px; background: #f9f9f9; }
+h1, h2 { color: #d44; }
+input, button { margin: 5px 0; padding: 8px; width: 100%; max-width: 500px; }
+section { background: white; padding: 20px; margin: 20px 0; border-radius: 10px; box-shadow: 0 2px 6px #ccc; }
+.table-preview { max-width: 100%; overflow-x: auto; margin-top: 10px; }

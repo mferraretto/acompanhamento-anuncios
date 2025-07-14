@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Acompanhamento de Anúncios</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>🛠 Cadastro de Anúncio - Shopee</h1>
+
+  <section>
+    <h2>📥 Importar Planilhas da Shopee</h2>
+    <input type="file" id="inputShopeePlanilhas" accept=".xlsx" multiple />
+    <div id="previewShopeePlanilhas" class="table-preview"></div>
+    <button id="btnSalvarShopeePlanilhas">Salvar Anúncios</button>
+  </section>
+
+  <section>
+    <h2>📥 Importar Planilha de Pedidos</h2>
+    <input type="file" id="inputPlanilhaPedidos" accept=".xlsx" />
+    <div id="previewPedidos" class="table-preview"></div>
+    <button id="savePedidosBtn">Salvar Pedidos</button>
+  </section>
+
+  <section>
+    <h2>✍️ Cadastro Manual</h2>
+    <form id="formCadastro">
+      <input type="text" placeholder="Nome do Produto" name="nome" required />
+      <input type="text" placeholder="Link Shopee" name="link" required />
+      <input type="text" placeholder="SKU" name="sku" required />
+      <input type="text" placeholder="URL da Imagem" name="imagem" required />
+      <input type="date" name="data" required />
+      <button type="submit">Cadastrar Manualmente</button>
+    </form>
+    <div id="msgCadastro"></div>
+  </section>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="firebase.js"></script>
+  <script src="importShopee.js"></script>
+  <script src="importPedidos.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
