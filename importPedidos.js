@@ -1,5 +1,14 @@
 
 const sanitize = (v) => (v == null ? '' : String(v));
+const removeInvalid = (obj) => {
+  const out = {};
+  for (const [k, v] of Object.entries(obj)) {
+    if (v !== undefined && (typeof v !== 'number' || Number.isFinite(v))) {
+      out[k] = v;
+    }
+  }
+  return out;
+};
 document.getElementById("savePedidosBtn").addEventListener("click", async () => {
   try {
     const input = document.getElementById("inputPlanilhaPedidos");
@@ -21,21 +30,30 @@ document.getElementById("savePedidosBtn").addEventListener("click", async () => 
   table.appendChild(headerRow);
 
   for (let row of data) {
+    const sku = String(row['SKU'] || '').trim();
+    const status = String(row['Status'] || '').trim();
+    const valor = row['Valor'];
+    if (!sku || !status || valor === undefined || valor === '' ||
+        (typeof valor === 'number' && !Number.isFinite(valor))) {
+      continue;
+    }
+
     const tr = document.createElement('tr');
     const skuTd = document.createElement('td');
-    skuTd.textContent = sanitize(row['SKU']);
+    skuTd.textContent = sanitize(sku);
     tr.appendChild(skuTd);
 
     const statusTd = document.createElement('td');
-    statusTd.textContent = sanitize(row['Status']);
+    statusTd.textContent = sanitize(status);
     tr.appendChild(statusTd);
 
     const valorTd = document.createElement('td');
-    valorTd.textContent = sanitize(row['Valor']);
+    valorTd.textContent = sanitize(valor);
     tr.appendChild(valorTd);
 
     table.appendChild(tr);
-    await db.collection("pedidos").add(row);
+    const cleanRow = removeInvalid(row);
+    await db.collection("pedidos").add(cleanRow);
   }
 
   preview.innerHTML = '';
