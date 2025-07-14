@@ -1,5 +1,6 @@
 const db = firebase.firestore();
 import { sanitize } from './utils.js';
+import { loadDesempenho } from './tabs.js';
 
 document.getElementById('btnSalvarDesempenho').addEventListener('click', async () => {
   const input = document.getElementById('inputPlanilhaDesempenho');
