@@ -1,5 +1,14 @@
 // Parse and merge Shopee spreadsheets (basic, media and shipping)
 const sanitize = (v) => (v == null ? '' : String(v));
+const removeInvalid = (obj) => {
+  const out = {};
+  for (const [k, v] of Object.entries(obj)) {
+    if (v !== undefined && (typeof v !== 'number' || Number.isFinite(v))) {
+      out[k] = v;
+    }
+  }
+  return out;
+};
 document.getElementById('btnSalvarShopeePlanilhas').addEventListener('click', async () => {
   try {
     const input = document.getElementById('inputShopeePlanilhas');
@@ -92,7 +101,8 @@ document.getElementById('btnSalvarShopeePlanilhas').addEventListener('click', as
 
     table.appendChild(row);
 
-    await db.collection('anuncios').doc(productId).set(item, { merge: true });
+const cleanItem = removeInvalid(item);
+    await db.collection('anuncios').doc(productId).set(cleanItem, { merge: true });
   }
 
   preview.innerHTML = '';
