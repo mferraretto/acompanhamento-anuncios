@@ -18,26 +18,17 @@ document.getElementById('btnSalvarShopeePlanilhas').addEventListener('click', as
     };
 
  const merged = {};
-     const skuMap = {}; // Map SKU -> product ID for quick lookups
-
 
     for (let file of files) {
       const lower = file.name.toLowerCase();
       const rows = await readExcel(file);
       for (const row of rows) {
 let productId = row['ID do Produto'];
-        const sku = row['SKU'] || row['item_sku'] || row['SKU de referência'];
         if (!productId && lower.includes('shipping')) {
-          // Shipping sheets may omit "ID do Produto". Try joining using the SKU
-          // previously mapped from the basic sheet or any prior row.
-          if (sku && skuMap[sku]) {
-            productId = skuMap[sku];
-          }
+          productId = row['SKU'] || row['item_sku'] || row['SKU de referência'];
         }
         if (!productId) continue;
         if (!merged[productId]) merged[productId] = {};
-                if (sku) skuMap[sku] = productId;
-
 
         if (lower.includes('basic')) {
           merged[productId].sku = row['SKU'] || row['item_sku'] || row['SKU de referência'];
@@ -105,22 +96,8 @@ let productId = row['ID do Produto'];
 
     table.appendChild(row);
 
-const payload = removeInvalid({
-      produto_id: productId,
-      sku: item.sku,
-      nome: item.name,
-      descricao: item.description,
-      imagem: item.main_image,
-      imagens_secundarias: item.secondary_images,
-      peso: item.weight,
-      medidas: {
-        comprimento: item.length,
-        largura: item.width,
-        altura: item.height,
-      },
-      dataAtualizacao: new Date().toISOString(),
-    });
-    await db.collection('anuncios').doc(productId).set(payload, { merge: true });
+const cleanItem = removeInvalid(item);
+    await db.collection('anuncios').doc(productId).set(cleanItem, { merge: true });
   }
 
   preview.innerHTML = '';
