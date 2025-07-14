@@ -28,14 +28,14 @@ document.querySelectorAll('#menuTabs button').forEach(btn => {
     const id = btn.dataset.section;
     showSection(id);
 
-    if (id === 'listaAnuncios') {
+   if (id === 'listaAnuncios') {
       loadAnuncios();
     } else if (id === 'historico') {
       loadHistorico();
     } else if (id === 'alteracoes') {
       loadAlteracoes();
     } else if (id === 'desempenho') {
-      // você pode adicionar uma função loadDesempenho() aqui, se quiser
+      loadDesempenho(); // ✅ CHAMANDO A FUNÇÃO!
     }
   });
 });
@@ -207,6 +207,34 @@ async function loadAlteracoes() {
 
   container.innerHTML = '';
   container.appendChild(table);
+}
+async function loadDesempenho() {
+  const container = document.getElementById('desempenhoCards');
+  container.innerHTML = '';
+
+  const snap = await db.collection('desempenho').get();
+
+  snap.forEach(doc => {
+    const d = doc.data();
+    const card = document.createElement('div');
+    card.style.border = '1px solid #ccc';
+    card.style.borderRadius = '10px';
+    card.style.padding = '15px';
+    card.style.margin = '10px 0';
+    card.style.backgroundColor = '#fff';
+    card.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+
+    card.innerHTML = `
+      <strong>SKU:</strong> ${d.sku || '---'}<br>
+      <strong>Nome:</strong> ${d.nome || '---'}<br>
+      <strong>Visualizações:</strong> ${d.visualizacoes || 0}<br>
+      <strong>Cliques:</strong> ${d.cliques || 0}<br>
+      <strong>Vendas:</strong> ${d.vendas || 0}<br>
+      <strong>CTR:</strong> ${d.ctr || '0%'}<br>
+      <strong>Data:</strong> ${new Date(d.data?.seconds * 1000).toLocaleDateString('pt-BR')}
+    `;
+    container.appendChild(card);
+  });
 }
 
 // Show default tab
