@@ -1,3 +1,5 @@
+import { registrarAlteracoes } from './logAlteracoes.js';
+
 // Parse and merge Shopee spreadsheets (basic, media and shipping)
 import { sanitize, removeInvalid } from './utils.js';
 
@@ -109,7 +111,11 @@ let productId = row['ID do Produto'] ?? row['et_title_product_id'];
     table.appendChild(row);
 
 const cleanItem = removeInvalid(item);
-    await db.collection('anuncios').doc(productId).set(cleanItem, { merge: true });
+const docRef = db.collection('anuncios').doc(productId);
+const docSnap = await docRef.get();
+const antigo = docSnap.exists ? docSnap.data() : {};
+await registrarAlteracoes(productId, 'Shopee', cleanItem, antigo);
+await docRef.set(cleanItem, { merge: true });
   }
 
   preview.innerHTML = '';
