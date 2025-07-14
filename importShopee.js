@@ -96,8 +96,22 @@ let productId = row['ID do Produto'];
 
     table.appendChild(row);
 
-const cleanItem = removeInvalid(item);
-    await db.collection('anuncios').doc(productId).set(cleanItem, { merge: true });
+const payload = removeInvalid({
+      produto_id: productId,
+      sku: item.sku,
+      nome: item.name,
+      descricao: item.description,
+      imagem: item.main_image,
+      imagens_secundarias: item.secondary_images,
+      peso: item.weight,
+      medidas: {
+        comprimento: item.length,
+        largura: item.width,
+        altura: item.height,
+      },
+      dataAtualizacao: new Date().toISOString(),
+    });
+    await db.collection('anuncios').doc(productId).set(payload, { merge: true });
   }
 
   preview.innerHTML = '';
