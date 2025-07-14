@@ -1,3 +1,13 @@
+const removeInvalid = (obj) => {
+  const out = {};
+  for (const [k, v] of Object.entries(obj)) {
+    if (v !== undefined && (typeof v !== 'number' || Number.isFinite(v))) {
+      out[k] = v;
+    }
+  }
+  return out;
+};
+
 document.getElementById("formCadastro").addEventListener("submit", async (e) => {
   e.preventDefault();
  try {
@@ -15,10 +25,11 @@ document.getElementById("formCadastro").addEventListener("submit", async (e) => 
 
   const docRef = db.collection("anuncios").doc(sku);
     const docSnap = await docRef.get();
+       const payload = removeInvalid({ nome, link, imagem, data });
     if (docSnap.exists) {
-      await docRef.update({ nome, link, imagem, data });
+      await docRef.update(payload);
     } else {
-      await docRef.set({ nome, link, imagem, data });
+      await docRef.set(payload);
     }
 
  document.getElementById("msgCadastro").innerText = "Cadastro salvo com sucesso!";
