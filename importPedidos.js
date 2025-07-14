@@ -1,14 +1,6 @@
 
-import { sanitize } from './utils.js';
-const removeInvalid = (obj) => {
-  const out = {};
-  for (const [k, v] of Object.entries(obj)) {
-    if (v !== undefined && (typeof v !== 'number' || Number.isFinite(v))) {
-      out[k] = v;
-    }
-  }
-  return out;
-};
+import { sanitize, removeInvalid } from './utils.js';
+
 document.getElementById("savePedidosBtn").addEventListener("click", async () => {
   try {
     const input = document.getElementById("inputPlanilhaPedidos");
