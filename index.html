@@ -16,6 +16,7 @@
     <button data-section="relatorio">Relatório</button>
     <button data-section="comparativo">Comparativo</button>
     <button data-section="alteracoes">📈 Alterações</button>
+    <button data-section="desempenho">📊 Desempenho</button>
   </nav>
 
   <!-- ✅ Aba de Cadastro -->
@@ -77,7 +78,12 @@
   <h2>📈 Histórico de Alterações</h2>
   <div id="alteracoesContent"></div>
 </section>
-
+<section id="desempenho" class="tab-section">
+  <h2>📊 Acompanhamento de Desempenho</h2>
+  <input type="file" id="inputPlanilhaDesempenho" accept=".xlsx" />
+  <div id="previewDesempenho" class="table-preview"></div>
+  <button id="btnSalvarDesempenho">Salvar no Firebase</button>
+</section>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
