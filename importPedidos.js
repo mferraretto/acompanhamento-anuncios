@@ -27,7 +27,7 @@ document.getElementById('savePedidosBtn').addEventListener('click', async () => 
     table.appendChild(headerRow);
 
     for (const row of rows) {
-      const id = String(row['ID do Produto'] ?? row['et_title_product_id'] || '').trim();
+const id = String(row['ID do Produto'] || row['et_title_product_id'] || '').trim();
       if (!id) continue;
 
      const peso = row['Peso do Produto/kg'] ?? row['et_title_product_weight'];
