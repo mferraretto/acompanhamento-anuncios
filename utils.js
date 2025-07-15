@@ -13,11 +13,15 @@ export const parseNumber = (value) => {
   }
   const str = String(value ?? '').trim();
   if (!str) return 0;
-  let normalized = str;
+const cleaned = str
+    .replace(/R\$/g, '')
+    .replace(/%/g, '')
+    .replace(/\s+/g, '');
+  let normalized = cleaned;
   if (str.includes(',') && str.includes('.')) {
-    normalized = str.replace(/\./g, '').replace(',', '.');
+    normalized = cleaned.replace(/\./g, '').replace(',', '.');
   } else if (str.includes(',')) {
-    normalized = str.replace(',', '.');
+    normalized = cleaned.replace(',', '.');
   }
   const n = Number(normalized);
   return Number.isNaN(n) ? 0 : n;
