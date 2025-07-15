@@ -1,5 +1,4 @@
 import { sanitize, parseNumber, removeInvalid } from './utils.js';
-import { sanitize, parseNumber } from './utils.js';
 const db = window.db;
 
 document.getElementById('btnSalvarDesempenho').addEventListener('click', async () => {
