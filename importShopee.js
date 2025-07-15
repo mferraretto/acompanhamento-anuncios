@@ -26,13 +26,13 @@ document.getElementById('btnSalvarShopeePlanilhas').addEventListener('click', as
       const lower = file.name.toLowerCase();
       const rows = await readExcel(file);
       for (const row of rows) {
-let productId = row['ID do Produto'] ?? row['et_title_product_id'];
+let itemId = row['ID do Produto'] ?? row['et_title_product_id'];
         if (!productId && lower.includes('shipping')) {
           productId = row['SKU'] || row['item_sku'] || row['SKU de referência'];
         }
-        if (!productId) continue;
-        if (!merged[productId]) merged[productId] = {};
-
+        if (!itemId) continue;
+if (!merged[itemId]) merged[itemId] = {};
+        
         if (lower.includes('basic')) {
           merged[productId].sku = row['SKU'] || row['item_sku'] || row['SKU de referência'];
           merged[productId].name = row['name'] || row['Nome do Produto'];
@@ -78,12 +78,12 @@ let productId = row['ID do Produto'] ?? row['et_title_product_id'];
   });
   table.appendChild(headerRow);
 
-  for (const productId in merged) {
-    const item = merged[productId];
+ for (const itemId in merged) {
+  const item = merged[itemId];
     const row = document.createElement('tr');
 
     const idTd = document.createElement('td');
-    idTd.textContent = sanitize(productId);
+idTd.textContent = sanitize(itemId);
     row.appendChild(idTd);
 
     const skuTd = document.createElement('td');
@@ -112,10 +112,11 @@ let productId = row['ID do Produto'] ?? row['et_title_product_id'];
     table.appendChild(row);
 
 const cleanItem = removeInvalid(item);
-const docRef = db.collection('anuncios').doc(productId);
+cleanItem.itemId = itemId; // salva o itemId dentro do objeto também
+const docRef = db.collection('anuncios').doc(itemId);
 const docSnap = await docRef.get();
 const antigo = docSnap.exists ? docSnap.data() : {};
-await registrarAlteracoes(productId, 'Shopee', cleanItem, antigo);
+await registrarAlteracoes(itemId, 'Shopee', cleanItem, antigo);
 await docRef.set(cleanItem, { merge: true });
   }
 
