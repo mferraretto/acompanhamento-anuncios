@@ -1,16 +1,6 @@
 # Acompanhamento de Anúncios
 
-Este projeto exige um arquivo `firebase.config.js` com as chaves do seu projeto Firebase.
+O Firebase é inicializado pelo script `firebase-init.js`. Altere esse arquivo com as credenciais do seu projeto, se necessário. A antiga abordagem com `firebase.config.js` não é mais utilizada.
 
-1. Copie `firebase.config.example.js` para `firebase.config.js`.
-2. Preencha o arquivo copiado com suas chaves pessoais.
-
-Antes de executar o aplicativo, garanta que o `firebase.config.js` exista. Caso o arquivo esteja ausente, o *service worker* pode exibir um erro 404 ao tenta‑lo.
-Inclua em `index.html` a linha `<script src="firebase.config.js"></script>` **antes** de carregar `firebase.js`. Esse arquivo deve estar presente em produção para que o aplicativo utilize suas próprias credenciais do Firebase.
-
-O `firebase.config.js` está listado no `.gitignore`. **Nunca** envie suas credenciais reais para o repositório.
-
-O arquivo `sw-register.js` registra automaticamente `service-worker.js` quando o navegador oferece suporte. Mantenha esse script referenciado no `index.html` para garantir o funcionamento offline.
-
-Ao carregar `firebase.js`, a instância do Firestore é exposta em `window.db`.
-Os módulos do projeto referenciam esse objeto com `const db = window.db;`.
+O arquivo `sw-register.js` registra automaticamente `service-worker.js` quando o navegador oferece suporte. Mantenha esse script referenciado no `index.html` para assegurar o funcionamento offline.
+Ao carregar `firebase.js`, a instância do Firestore fica disponível em `window.db`. Os módulos do projeto referenciam esse objeto com `const db = window.db;`.
