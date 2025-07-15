@@ -1,6 +1,4 @@
-// firebase.js
-
-const firebaseConfig = {
+let firebaseConfig = typeof window !== 'undefined' && window.firebaseConfig ? window.firebaseConfig : {
   apiKey: "AIzaSyAJHISEca3wibw92Bw6UQCpQuyhtkjAoWE",
   authDomain: "acompanhamento-anuncios.firebaseapp.com",
   projectId: "acompanhamento-anuncios",
@@ -10,5 +8,4 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-window.db = db; // Torna o 'db' acessível globalmente
+window.db = firebase.firestore(); // ✅ torna visível globalmente
