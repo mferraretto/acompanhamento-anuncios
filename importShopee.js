@@ -158,13 +158,7 @@ await docRef.set(cleanItem, { merge: true });
 
     table.appendChild(row);
 
-const cleanItem = removeInvalid(item);
-cleanItem.itemId = itemId; // salva o itemId dentro do objeto também
-const docRef = db.collection('anuncios').doc(itemId);
-const docSnap = await docRef.get();
-const antigo = docSnap.exists ? docSnap.data() : {};
-await registrarAlteracoes(itemId, 'Shopee', cleanItem, antigo);
-await docRef.set(cleanItem, { merge: true });
+
   }
 
   preview.innerHTML = '';
