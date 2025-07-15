@@ -54,7 +54,22 @@ async function loadAnuncios() {
 
   const table = document.createElement('table');
   const headerRow = document.createElement('tr');
-  ['SKU', 'Nome', 'Descrição', 'Peso', 'Comp.', 'Larg.', 'Altura', 'Imagem de Capa', 'Imagens Extras', 'Vendas', 'Visualizações', 'Conversão'].forEach(text => {
+[
+    'SKU',
+    'Nome',
+    'Descrição',
+    'Peso',
+    'Comp.',
+    'Larg.',
+    'Altura',
+    'Imagem de Capa',
+    'Imagens Extras',
+    'Visualizações',
+    'Cliques',
+    'Vendas',
+    'Conversão',
+    'Receita'
+  ].forEach(text => {
     const th = document.createElement('th');
     th.textContent = text;
     headerRow.appendChild(th);
@@ -102,9 +117,10 @@ async function loadAnuncios() {
     });
     tr.appendChild(extrasTd);
 
-    tr.appendChild(createTd(desempenho.vendas || 0));
     tr.appendChild(createTd(desempenho.visualizacoes || 0));
-
+tr.appendChild(createTd(desempenho.cliques || 0));
+    tr.appendChild(createTd(desempenho.vendas || 0));
+    
     const conversaoTd = document.createElement('td');
     const conversao = desempenho.conversao || 0;
     conversaoTd.textContent = `${conversao}%`;
@@ -123,6 +139,7 @@ async function loadAnuncios() {
     }
 
     tr.appendChild(conversaoTd);
+        tr.appendChild(createTd(`R$ ${(desempenho.receita ?? 0).toFixed(2)}`));
     table.appendChild(tr);
   });
 
