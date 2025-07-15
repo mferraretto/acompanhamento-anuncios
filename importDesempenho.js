@@ -1,4 +1,4 @@
-const db = firebase.firestore();
+const db = window.db;
 import { sanitize } from './utils.js';
 
 document.getElementById('btnSalvarDesempenho').addEventListener('click', async () => {
