@@ -1,8 +1,8 @@
 # Importação de Planilhas
 
-Para importar planilhas de produtos ou pedidos é necessário configurar suas credenciais do Firebase em `firebase-init.js`.
+Para importar planilhas de produtos ou pedidos, copie `firebase.config.example.js` para `firebase.config.js` e preencha com suas credenciais do Firebase. Este arquivo não é versionado.
 
-Antes de executar os processos de importação, garanta que o `firebase-init.js` esteja configurado corretamente. Caso as credenciais estejam ausentes, o *service worker* da aplicação pode exibir um erro 404 ao carregá-lo.
+Antes de executar os processos de importação, garanta que o `firebase.config.js` exista (copie do exemplo se necessário). Caso o arquivo esteja ausente, o *service worker* da aplicação pode exibir um erro 404 ao tenta‑lo.
 O `service-worker.js` é registrado automaticamente pelo script `sw-register.js`, já incluído no `index.html`.
 
 Durante a importação, os scripts removem campos que estejam `undefined` ou contenham valores inválidos (`NaN`, `Infinity`). Isso evita erros HTTP 400 ao gravar documentos no Firestore.
