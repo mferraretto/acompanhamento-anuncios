@@ -77,9 +77,9 @@ document.getElementById('btnSalvarDesempenho').addEventListener('click', async (
       cardsContainer.appendChild(card);
 
       // Salvar no Firebase
-      const payload = removeInvalid(dados);
-const safeSku = sku.replace(/[.#$/\[\]]/g, '-'); // Evita erro de caractere inválido
+      const safeSku = sku.replace(/[.#$/\[\]]/g, '-'); // Evita erro de caractere inválido
 const payload = removeInvalid(dados);
+await db.collection('desempenho').doc(safeSku).set(payload, { merge: true });
 
 // Verificação extra para NaN
 if (isNaN(payload.visualizacoes) || isNaN(payload.cliques) || isNaN(payload.vendas) || isNaN(payload.conversao) || isNaN(payload.receita)) {
