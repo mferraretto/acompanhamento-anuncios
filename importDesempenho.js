@@ -1,5 +1,5 @@
-import { db } from './firebase.js';
 import { sanitize } from './utils.js';
+const db = window.db;
 
 document.getElementById('btnSalvarDesempenho').addEventListener('click', async () => {
   const input = document.getElementById('inputPlanilhaDesempenho');
