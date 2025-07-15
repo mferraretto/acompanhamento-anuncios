@@ -50,8 +50,11 @@ async function loadAnuncios() {
   const desempenhoSnap = await db.collection('desempenho').get();
 
   const desempenhoMap = {};
-  desempenhoSnap.forEach(doc => desempenhoMap[doc.id] = doc.data());
-
+ desempenhoSnap.forEach(doc => {
+    const dados = doc.data();
+    const chave = dados.itemId || doc.id;
+    desempenhoMap[chave] = dados;
+  });
   const table = document.createElement('table');
   const headerRow = document.createElement('tr');
 [
@@ -80,8 +83,9 @@ async function loadAnuncios() {
     const data = doc.data();
     const tr = document.createElement('tr');
 
-    const sku = sanitize(doc.id);
-    const desempenho = desempenhoMap[sku] || {};
+  const itemId = data.itemId || doc.id;
+    const sku = sanitize(data.sku || doc.id);
+    const desempenho = desempenhoMap[itemId] || {};
 
     const createTd = value => {
       const td = document.createElement('td');
