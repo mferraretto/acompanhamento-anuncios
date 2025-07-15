@@ -18,4 +18,4 @@ if (typeof window !== 'undefined') {
   window.db = db;
 }
 
-export { db };
+window.db = firebase.firestore();
