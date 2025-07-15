@@ -94,7 +94,11 @@ document.getElementById('btnSalvarDesempenho').addEventListener('click', async (
 
       // Salvar no Firebase usando ID do Item como chave
       const payload = removeInvalid(dados);
-      await db.collection('desempenho').doc(safeId).set(payload, { merge: true });
+const desempenhoRef = db.collection('desempenho').doc(safeId);
+await desempenhoRef.set({ itemId: safeId }, { merge: true }); // metadados básicos
+
+const historicoRef = desempenhoRef.collection('historico').doc(payload.dataRegistro);
+await historicoRef.set(payload); // Salva evolução diária
     }
 
     preview.innerHTML = '';
@@ -137,10 +141,11 @@ async function renderChart() {
   const dataLimite = new Date(hoje);
   dataLimite.setDate(hoje.getDate() - dias);
 
-  const snapshot = await db.collection('desempenho')
-    .where('itemId', '==', itemId)
-    .orderBy('dataRegistro')
-    .get();
+  const historicoRef = db.collection('desempenho').doc(itemId).collection('historico');
+const snapshot = await historicoRef
+  .where('dataRegistro', '>=', dataLimite.toISOString())
+  .orderBy('dataRegistro')
+  .get();
 
   const dados = snapshot.docs
     .map(doc => doc.data())
