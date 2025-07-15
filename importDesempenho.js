@@ -2,8 +2,10 @@ import { sanitize, parseNumber, removeInvalid } from './utils.js';
 const db = window.db;
 
 document.getElementById('btnSalvarDesempenho').addEventListener('click', async () => {
+  try {
   const input = document.getElementById('inputPlanilhaDesempenho');
   const preview = document.getElementById('previewDesempenho');
+    const files = input.files;
   const cardsContainer = document.getElementById('desempenhoCards');
 
   if (!input.files.length) {
