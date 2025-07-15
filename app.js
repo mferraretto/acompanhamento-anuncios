@@ -1,4 +1,5 @@
 import { removeInvalid } from './utils.js';
+const db = window.db;
 
 document.getElementById("formCadastro").addEventListener("submit", async (e) => {
   e.preventDefault();
