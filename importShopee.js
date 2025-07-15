@@ -1,8 +1,8 @@
 import { registrarAlteracoes } from './logAlteracoes.js';
-import { db } from './firebase.js';
 
 // Parse and merge Shopee spreadsheets (basic, media and shipping)
 import { sanitize, removeInvalid } from './utils.js';
+const db = window.db;
 
 document.getElementById('btnSalvarShopeePlanilhas').addEventListener('click', async () => {
   try {
