@@ -10,5 +10,5 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-// Em vez de export, use:
+
 window.db = firebase.firestore();
