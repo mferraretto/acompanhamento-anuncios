@@ -1,13 +1,13 @@
 // Increment the cache name whenever cached files change
 // so the service worker installs a fresh cache.
-const CACHE_NAME = 'app-cache-v2';
+const CACHE_NAME = 'app-cache-v3';
 const ASSETS = [
   './',
   './index.html',
   './style.css',
   './app.js',
   './tabs.js',
-  './firebase.js',
+  './firebase-init.js',
   './importShopee.js',
   './importPedidos.js',
   './importDesempenho.js',
