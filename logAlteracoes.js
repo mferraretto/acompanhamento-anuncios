@@ -1,3 +1,5 @@
+const db = window.db;
+
 export async function registrarAlteracoes(sku, origem, novoPayload, antigoPayload) {
   if (!sku || !novoPayload) return;
 
