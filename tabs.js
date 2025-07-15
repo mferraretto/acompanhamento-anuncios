@@ -225,15 +225,22 @@ async function loadDesempenho() {
     card.style.backgroundColor = '#fff';
     card.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
 
-    card.innerHTML = `
-      <strong>SKU:</strong> ${d.sku || '---'}<br>
-      <strong>Visualizações:</strong> ${d.visualizacoes || 0}<br>
-      <strong>Cliques:</strong> ${d.cliques || 0}<br>
-      <strong>Vendas:</strong> ${d.vendas || 0}<br>
-      <strong>Conversão:</strong> ${d.conversao || 0}%<br>
-      <strong>Receita:</strong> R$ ${(d.receita ?? 0).toFixed(2)}<br>
-      <strong>Data:</strong> ${new Date(d.dataRegistro).toLocaleDateString('pt-BR')}
-    `;
+    const addField = (label, value) => {
+      const p = document.createElement('p');
+      const strong = document.createElement('strong');
+      strong.textContent = value;
+      p.textContent = label + ' ';
+      p.appendChild(strong);
+      card.appendChild(p);
+    };
+
+    addField('SKU:', d.sku || '---');
+    addField('Visualizações:', d.visualizacoes || 0);
+    addField('Cliques:', d.cliques || 0);
+    addField('Vendas:', d.vendas || 0);
+    addField('Conversão:', `${d.conversao || 0}%`);
+    addField('Receita:', `R$ ${(d.receita ?? 0).toFixed(2)}`);
+    addField('Data:', new Date(d.dataRegistro).toLocaleDateString('pt-BR'));
     container.appendChild(card);
   });
 }
