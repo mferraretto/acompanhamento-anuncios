@@ -1,4 +1,6 @@
-const CACHE_NAME = 'app-cache-v1';
+// Increment the cache name whenever cached files change
+// so the service worker installs a fresh cache.
+const CACHE_NAME = 'app-cache-v2';
 const ASSETS = [
   './',
   './index.html',
