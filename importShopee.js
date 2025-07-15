@@ -1,4 +1,5 @@
 import { registrarAlteracoes } from './logAlteracoes.js';
+import { db } from './firebase.js';
 
 // Parse and merge Shopee spreadsheets (basic, media and shipping)
 import { sanitize, removeInvalid } from './utils.js';
