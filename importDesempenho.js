@@ -1,5 +1,16 @@
-import { sanitize } from './utils.js';
+import { sanitize, removeInvalid } from './utils.js';
 const db = window.db;
+function parseNumber(value) {
+  if (typeof value === 'number') {
+    return Number.isFinite(value) ? value : 0;
+  }
+  if (typeof value === 'string') {
+    const normalized = value.replace(/\./g, '').replace(',', '.').trim();
+    const num = parseFloat(normalized);
+    return Number.isFinite(num) ? num : 0;
+  }
+  return 0;
+}
 
 document.getElementById('btnSalvarDesempenho').addEventListener('click', async () => {
   const input = document.getElementById('inputPlanilhaDesempenho');
@@ -30,16 +41,21 @@ document.getElementById('btnSalvarDesempenho').addEventListener('click', async (
   cardsContainer.innerHTML = ''; // Limpa cards anteriores
 
   for (const row of rows) {
-    const sku = row['Identificação do Produto'] || row['SKU'] || row['Parent SKU'] || '';
+const sku =
+      row['Identificação do Produto'] || row['SKU'] || row['Parent SKU'] || '';
     if (!sku) continue;
 
     const dados = {
       sku,
-      visualizacoes: Number(row['Total de visualizações'] || row['Visualizações'] || 0),
-      cliques: Number(row['Total de cliques'] || row['Cliques'] || 0),
-      vendas: Number(row['Total de pedidos pagos'] || row['Vendas'] || 0),
-      conversao: parseFloat(row['Taxa de conversão (%)'] || row['Conversão (%)'] || 0),
-      receita: parseFloat(row['Valor total do pedido'] || row['Receita'] || 0),
+      visualizacoes: parseNumber(
+        row['Total de visualizações'] ?? row['Visualizações']
+      ),
+      cliques: parseNumber(row['Total de cliques'] ?? row['Cliques']),
+      vendas: parseNumber(row['Total de pedidos pagos'] ?? row['Vendas']),
+      conversao: parseNumber(
+        row['Taxa de conversão (%)'] ?? row['Conversão (%)']
+      ),
+      receita: parseNumber(row['Valor total do pedido'] ?? row['Receita']),
       dataRegistro: new Date().toISOString()
     };
 
@@ -66,7 +82,8 @@ document.getElementById('btnSalvarDesempenho').addEventListener('click', async (
     cardsContainer.appendChild(card);
 
     // Salvar no Firebase
-    await db.collection('desempenho').doc(sku).set(dados, { merge: true });
+    const payload = removeInvalid(dados);
+    await db.collection('desempenho').doc(sku).set(payload, { merge: true });
   }
 
   preview.innerHTML = '';
