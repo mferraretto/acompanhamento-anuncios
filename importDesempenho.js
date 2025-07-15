@@ -29,19 +29,35 @@ document.getElementById('btnSalvarDesempenho').addEventListener('click', async (
     cardsContainer.innerHTML = '';
 
     for (const row of rows) {
-     const sku = String(row['SKU da Variação'] || '').trim();
+      const sku = String(row['SKU da Variação'] || '').trim();
+      const itemId = String(row['ID do Item'] || '').trim();
+      if (!itemId) continue;
 
-      if (!sku) continue;
+      const safeId = itemId.replace(/[.#$/\[\]]/g, '-'); // Firebase-safe ID
 
-    const dados = {
-  sku,
-  visualizacoes: parseNumber(row['Visualizações da Página do Produto'] || 0),
-  cliques: parseNumber(row['Unidades (adicionar ao carrinho)'] || 0),
-  vendas: parseNumber(row['Unidades (Pedido pago)'] || 0),
-  conversao: parseNumber(row['Taxa de conversão (Pedido pago)'] || 0),
-  receita: parseNumber(row['Vendas (Pedido pago) (BRL)'] || 0),
-  dataRegistro: new Date().toISOString()
-};
+      const dados = {
+        itemId,
+        sku,
+        visualizacoes: parseNumber(row['Visualizações da Página do Produto'] || row['Total de visualizações'] || 0),
+        cliques: parseNumber(row['Unidades (adicionar ao carrinho)'] || row['Total de cliques'] || 0),
+        vendas: parseNumber(row['Unidades (Pedido pago)'] || row['Total de pedidos pagos'] || 0),
+        conversao: parseNumber(row['Taxa de conversão (Pedido pago)'] || row['Taxa de conversão (%)'] || 0),
+        receita: parseNumber(row['Vendas (Pedido pago) (BRL)'] || row['Valor total do pedido'] || 0),
+        dataRegistro: new Date().toISOString()
+      };
+
+      // Validação básica
+      if (
+        isNaN(dados.visualizacoes) ||
+        isNaN(dados.cliques) ||
+        isNaN(dados.vendas) ||
+        isNaN(dados.conversao) ||
+        isNaN(dados.receita)
+      ) {
+        console.warn(`⚠️ Dados inválidos para SKU: ${sku}`, dados);
+        continue;
+      }
+
       // Tabela
       const tr = document.createElement('tr');
       [dados.sku, dados.visualizacoes, dados.cliques, dados.vendas, dados.conversao, dados.receita].forEach(val => {
@@ -76,18 +92,9 @@ document.getElementById('btnSalvarDesempenho').addEventListener('click', async (
 
       cardsContainer.appendChild(card);
 
-      // Salvar no Firebase
-      const safeSku = sku.replace(/[.#$/\[\]]/g, '-'); // Evita erro de caractere inválido
-const payload = removeInvalid(dados);
-await db.collection('desempenho').doc(safeSku).set(payload, { merge: true });
-
-// Verificação extra para NaN
-if (isNaN(payload.visualizacoes) || isNaN(payload.cliques) || isNaN(payload.vendas) || isNaN(payload.conversao) || isNaN(payload.receita)) {
-  console.warn(`⚠️ Dados inválidos para SKU: ${sku}`, payload);
-  continue; // pula este item
-}
-
-await db.collection('desempenho').doc(safeSku).set(payload, { merge: true });
+      // Salvar no Firebase usando ID do Item como chave
+      const payload = removeInvalid(dados);
+      await db.collection('desempenho').doc(safeId).set(payload, { merge: true });
     }
 
     preview.innerHTML = '';
