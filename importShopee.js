@@ -148,15 +148,14 @@ if (desempenho) {
   conversaoTd.textContent = 'Sem dados';
   conversaoTd.style.color = 'gray';
 }
-row.appendChild(conversaoTd);
+  row.appendChild(conversaoTd);
 
-// ✅ Salvar anúncio no Firebase com alterações
-const cleanItem = removeInvalid(item);
-cleanItem.itemId = itemId;
-await registrarAlteracoes(itemId, 'Shopee', cleanItem, antigo);
-await docRef.set(cleanItem, { merge: true });
-
-    table.appendChild(row);
+  // ✅ Salvar anúncio no Firebase com alterações
+  const cleanItem = removeInvalid(item);
+  cleanItem.itemId = itemId;
+  await registrarAlteracoes(itemId, 'Shopee', cleanItem, antigo);
+  await docRef.set(cleanItem, { merge: true });
+  table.appendChild(row);
 
 
   }
