@@ -62,10 +62,35 @@
     <div id="listaAnunciosContent"></div>
   </section>
 
-  <section id="evolucao" class="tab-section">
-    <h2>Evolução</h2>
-    <p>Em desenvolvimento...</p>
-  </section>
+<section id="evolucao" class="tab-section">
+  <h2>📈 Evolução dos Anúncios</h2>
+
+  <div class="filtros-evolucao">
+    <label for="filtroEvolucaoAnuncio1">Anúncio 1:</label>
+    <select id="filtroEvolucaoAnuncio1" class="form-select"></select>
+
+    <label for="filtroEvolucaoAnuncio2">Comparar com:</label>
+    <select id="filtroEvolucaoAnuncio2" class="form-select">
+      <option value="">Nenhum</option>
+    </select>
+
+    <label for="filtroEvolucaoPeriodo">Período:</label>
+    <select id="filtroEvolucaoPeriodo" class="form-select">
+      <option value="7">Últimos 7 dias</option>
+      <option value="30" selected>Últimos 30 dias</option>
+      <option value="90">Últimos 90 dias</option>
+    </select>
+
+    <button onclick="gerarGraficoEvolucao()" class="btn btn-primary mt-2">📊 Gerar Gráficos</button>
+  </div>
+
+  <div class="grafico-container mt-4">
+    <canvas id="graficoLinhaConversao" height="150"></canvas>
+  </div>
+  <div class="grafico-container mt-4">
+    <canvas id="graficoBarrasMetricas" height="150"></canvas>
+  </div>
+</section>
 
   <section id="relatorio" class="tab-section">
     <h2>Relatório</h2>
