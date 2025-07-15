@@ -103,6 +103,11 @@ nav button {
   #listaAnunciosContent td:nth-child(7)::before { content: "Altura"; }
   #listaAnunciosContent td:nth-child(8)::before { content: "Imagem de Capa"; }
   #listaAnunciosContent td:nth-child(9)::before { content: "Imagens Extras"; }
+   #listaAnunciosContent td:nth-child(10)::before { content: "Visualizações"; }
+  #listaAnunciosContent td:nth-child(11)::before { content: "Cliques"; }
+  #listaAnunciosContent td:nth-child(12)::before { content: "Vendas"; }
+  #listaAnunciosContent td:nth-child(13)::before { content: "Conversão"; }
+  #listaAnunciosContent td:nth-child(14)::before { content: "Receita"; }
 }
 #alteracoesContent table {
   width: 100%;
