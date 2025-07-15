@@ -29,24 +29,19 @@ document.getElementById('btnSalvarDesempenho').addEventListener('click', async (
     cardsContainer.innerHTML = '';
 
     for (const row of rows) {
-      const sku = String(
-        row['Identificação do Produto'] ||
-        row['SKU'] ||
-        row['Parent SKU'] ||
-        ''
-      ).trim();
+     const sku = String(row['SKU da Variação'] || '').trim();
+
       if (!sku) continue;
 
-      const dados = {
-        sku,
-        visualizacoes: parseNumber(row['Total de visualizações'] || row['Visualizações'] || 0),
-        cliques: parseNumber(row['Total de cliques'] || row['Cliques'] || 0),
-        vendas: parseNumber(row['Total de pedidos pagos'] || row['Vendas'] || 0),
-        conversao: parseNumber(row['Taxa de conversão (%)'] || row['Conversão (%)'] || 0),
-        receita: parseNumber(row['Valor total do pedido'] || row['Receita'] || 0),
-        dataRegistro: new Date().toISOString()
-      };
-
+    const dados = {
+  sku,
+  visualizacoes: parseNumber(row['Visualizações da Página do Produto'] || 0),
+  cliques: parseNumber(row['Unidades (adicionar ao carrinho)'] || 0),
+  vendas: parseNumber(row['Unidades (Pedido pago)'] || 0),
+  conversao: parseNumber(row['Taxa de conversão (Pedido pago)'] || 0),
+  receita: parseNumber(row['Vendas (Pedido pago) (BRL)'] || 0),
+  dataRegistro: new Date().toISOString()
+};
       // Tabela
       const tr = document.createElement('tr');
       [dados.sku, dados.visualizacoes, dados.cliques, dados.vendas, dados.conversao, dados.receita].forEach(val => {
