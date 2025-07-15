@@ -1,4 +1,20 @@
 export const sanitize = (v) => (v == null ? '' : String(v));
+
+export const parseNumber = (value) => {
+  if (typeof value === 'number') {
+    return value;
+  }
+  const str = String(value ?? '').trim();
+  if (!str) return 0;
+  let normalized = str;
+  if (str.includes(',') && str.includes('.')) {
+    normalized = str.replace(/\./g, '').replace(',', '.');
+  } else if (str.includes(',')) {
+    normalized = str.replace(',', '.');
+  }
+  const n = Number(normalized);
+  return Number.isNaN(n) ? 0 : n;
+};
 export const removeInvalid = (obj) => {
  if (Array.isArray(obj)) {
     return obj
