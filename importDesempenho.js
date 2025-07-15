@@ -1,4 +1,4 @@
-import { sanitize, removeInvalid } from './utils.js';
+import { sanitize, parseNumber } from './utils.js';
 const db = window.db;
 function parseNumber(value) {
   if (typeof value === 'number') {
@@ -47,15 +47,11 @@ const sku =
 
     const dados = {
       sku,
-      visualizacoes: parseNumber(
-        row['Total de visualizações'] ?? row['Visualizações']
-      ),
-      cliques: parseNumber(row['Total de cliques'] ?? row['Cliques']),
-      vendas: parseNumber(row['Total de pedidos pagos'] ?? row['Vendas']),
-      conversao: parseNumber(
-        row['Taxa de conversão (%)'] ?? row['Conversão (%)']
-      ),
-      receita: parseNumber(row['Valor total do pedido'] ?? row['Receita']),
+      visualizacoes: parseNumber(row['Total de visualizações'] || row['Visualizações'] || 0),
+      cliques: parseNumber(row['Total de cliques'] || row['Cliques'] || 0),
+      vendas: parseNumber(row['Total de pedidos pagos'] || row['Vendas'] || 0),
+      conversao: parseNumber(row['Taxa de conversão (%)'] || row['Conversão (%)'] || 0),
+      receita: parseNumber(row['Valor total do pedido'] || row['Receita'] || 0),
       dataRegistro: new Date().toISOString()
     };
 
