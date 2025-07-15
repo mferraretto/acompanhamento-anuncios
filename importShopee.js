@@ -71,7 +71,7 @@ if (!merged[itemId]) merged[itemId] = {};
 
    const table = document.createElement('table');
   const headerRow = document.createElement('tr');
-  ['ID', 'SKU', 'Nome', 'Peso', 'Medidas', 'Imagem'].forEach(text => {
+['ID', 'SKU', 'Nome', 'Peso', 'Medidas', 'Imagem', 'Conversão (%)'].forEach(text => {
     const th = document.createElement('th');
     th.textContent = text;
     headerRow.appendChild(th);
@@ -108,6 +108,110 @@ idTd.textContent = sanitize(itemId);
     img.width = 50;
     imgTd.appendChild(img);
     row.appendChild(imgTd);
+// 🔄 Buscar dados anteriores e salvar
+const cleanItem = removeInvalid(item);
+cleanItem.itemId = itemId;
+
+const docRef = db.collection('anuncios').doc(itemId);
+const docSnap = await docRef.get();
+const antigo = docSnap.exists ? docSnap.data() : {};
+await registrarAlteracoes(itemId, 'Shopee', cleanItem, antigo);
+await docRef.set(cleanItem, { merge: true });
+
+// 🔄 Buscar dados anteriores e salvar
+const cleanItem = removeInvalid(item);
+cleanItem.itemId = itemId;
+
+const docRef = db.collection('anuncios').doc(itemId);
+const docSnap = await docRef.get();
+const antigo = docSnap.exists ? docSnap.data() : {};
+await registrarAlteracoes(itemId, 'Shopee', cleanItem, antigo);
+await docRef.set(cleanItem, { merge: true });
+
+// 🔄 Buscar desempenho
+const desempenhoRef = await db.collection('desempenho').doc(itemId).get();
+const desempenho = desempenhoRef.exists ? desempenhoRef.data() : null;
+
+// 🔍 Alerta visual se nome mudou e desempenho também
+if (antigo.name && item.name !== antigo.name && desempenho) {
+  const antigaConversao = parseFloat(antigo.conversao || 0);
+  const novaConversao = parseFloat(desempenho.conversao || 0);
+  const diff = novaConversao - antigaConversao;
+
+  if (diff > 0) {
+    nameTd.style.backgroundColor = '#d4edda'; // verde claro
+    nameTd.title = `Nome alterado e conversão subiu ${diff.toFixed(2)}%`;
+  } else if (diff < 0) {
+    nameTd.style.backgroundColor = '#f8d7da'; // vermelho claro
+    nameTd.title = `Nome alterado e conversão caiu ${Math.abs(diff).toFixed(2)}%`;
+  }
+}
+
+// 📊 Conversão com alerta de cores
+const conversaoTd = document.createElement('td');
+if (desempenho) {
+  const conversao = parseFloat(desempenho.conversao || 0);
+  conversaoTd.textContent = `${conversao.toFixed(2)}%`;
+
+  if (conversao < 1) {
+    conversaoTd.style.color = 'red';
+    conversaoTd.style.fontWeight = 'bold';
+  } else if (conversao >= 2.5) {
+    conversaoTd.style.color = 'green';
+  }
+} else {
+  conversaoTd.textContent = 'Sem dados';
+  conversaoTd.style.color = 'gray';
+}
+row.appendChild(conversaoTd);
+// 🔄 Buscar dados anteriores e salvar
+const cleanItem = removeInvalid(item);
+cleanItem.itemId = itemId;
+
+const docRef = db.collection('anuncios').doc(itemId);
+const docSnap = await docRef.get();
+const antigo = docSnap.exists ? docSnap.data() : {};
+await registrarAlteracoes(itemId, 'Shopee', cleanItem, antigo);
+await docRef.set(cleanItem, { merge: true });
+
+// 🔄 Buscar desempenho
+const desempenhoRef = await db.collection('desempenho').doc(itemId).get();
+const desempenho = desempenhoRef.exists ? desempenhoRef.data() : null;
+
+// 🔍 Alerta visual se nome mudou e desempenho também
+if (antigo.name && item.name !== antigo.name && desempenho) {
+  const antigaConversao = parseFloat(antigo.conversao || 0);
+  const novaConversao = parseFloat(desempenho.conversao || 0);
+  const diff = novaConversao - antigaConversao;
+
+  if (diff > 0) {
+    nameTd.style.backgroundColor = '#d4edda'; // verde claro
+    nameTd.title = `Nome alterado e conversão subiu ${diff.toFixed(2)}%`;
+  } else if (diff < 0) {
+    nameTd.style.backgroundColor = '#f8d7da'; // vermelho claro
+    nameTd.title = `Nome alterado e conversão caiu ${Math.abs(diff).toFixed(2)}%`;
+  }
+}
+
+// 📊 Conversão com alerta de cores
+const conversaoTd = document.createElement('td');
+if (desempenho) {
+  const conversao = parseFloat(desempenho.conversao || 0);
+  conversaoTd.textContent = `${conversao.toFixed(2)}%`;
+
+  if (conversao < 1) {
+    conversaoTd.style.color = 'red';
+    conversaoTd.style.fontWeight = 'bold';
+  } else if (conversao >= 2.5) {
+    conversaoTd.style.color = 'green';
+  }
+} else {
+  conversaoTd.textContent = 'Sem dados';
+  conversaoTd.style.color = 'gray';
+}
+row.appendChild(conversaoTd);
+
+
 
     table.appendChild(row);
 
