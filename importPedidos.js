@@ -1,5 +1,6 @@
 
 import { sanitize, removeInvalid } from './utils.js';
+import { db } from './firebase.js';
 
 // Import logistics spreadsheet and update existing products
 document.getElementById('savePedidosBtn').addEventListener('click', async () => {
