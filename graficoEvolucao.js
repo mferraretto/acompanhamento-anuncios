@@ -1,7 +1,5 @@
 // graficoEvolucao.js
-import Chart from 'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js';
-
-export async function gerarGraficoEvolucao(db) {
+export async function gerarGraficoEvolucao() {
   const itemId1 = document.getElementById('filtroEvolucaoAnuncio1').value;
   const itemId2 = document.getElementById('filtroEvolucaoAnuncio2').value;
   const dias = parseInt(document.getElementById('filtroEvolucaoPeriodo').value);
@@ -11,6 +9,8 @@ export async function gerarGraficoEvolucao(db) {
   const hoje = new Date();
   const dataLimite = new Date(hoje);
   dataLimite.setDate(hoje.getDate() - dias);
+
+  const db = window.db; // ✅ usa o db global inicializado no firebase-init.js
 
   async function buscarDados(itemId) {
     const historicoRef = db.collection('desempenho').doc(itemId).collection('historico');
