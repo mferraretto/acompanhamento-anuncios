@@ -56,114 +56,40 @@
     <h2>Histórico</h2>
     <div id="historicoContent"></div>
   </section>
+<section id="evolucao" class="tab-section">
+  <h2>📈 Evolução de Desempenho</h2>
+  <div class="row mb-3">
+    <div class="col-md-4">
+      <label for="filtroEvolucaoAnuncio1">Anúncio 1:</label>
+      <select id="filtroEvolucaoAnuncio1" class="form-select"></select>
+    </div>
+    <div class="col-md-4">
+      <label for="filtroEvolucaoAnuncio2">Anúncio 2 (opcional):</label>
+      <select id="filtroEvolucaoAnuncio2" class="form-select">
+        <option value="">Nenhum</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <label for="filtroEvolucaoPeriodo">Período:</label>
+      <select id="filtroEvolucaoPeriodo" class="form-select">
+        <option value="7">Últimos 7 dias</option>
+        <option value="30" selected>Últimos 30 dias</option>
+        <option value="90">Últimos 90 dias</option>
+      </select>
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+      <button class="btn btn-primary w-100" onclick="gerarGraficoEvolucao()">📊 Gerar Gráfico</button>
+    </div>
+  </div>
+
+  <canvas id="graficoLinhaConversao" height="120" class="my-4"></canvas>
+  <canvas id="graficoBarrasMetricas" height="120" class="my-4"></canvas>
+</section>
 
   <section id="listaAnuncios" class="tab-section">
     <h2>Lista de Anúncios</h2>
     <div id="listaAnunciosContent"></div>
   </section>
-
-async function gerarGraficoEvolucao() {
-  const itemId1 = document.getElementById('filtroEvolucaoAnuncio1').value;
-  const itemId2 = document.getElementById('filtroEvolucaoAnuncio2').value;
-  const dias = parseInt(document.getElementById('filtroEvolucaoPeriodo').value);
-
-  if (!itemId1) {
-    alert('Selecione pelo menos um anúncio.');
-    return;
-  }
-
-  const hoje = new Date();
-  const dataLimite = new Date(hoje);
-  dataLimite.setDate(hoje.getDate() - dias);
-
-  async function buscarDados(itemId) {
-    const historicoRef = db.collection('desempenho').doc(itemId).collection('historico');
-    const snapshot = await historicoRef
-      .where('dataRegistro', '>=', dataLimite.toISOString())
-      .orderBy('dataRegistro')
-      .get();
-
-    return snapshot.docs.map(doc => doc.data());
-  }
-
-  const dados1 = await buscarDados(itemId1);
-  const dados2 = itemId2 ? await buscarDados(itemId2) : [];
-
-  const labels = dados1.map(d => new Date(d.dataRegistro).toLocaleDateString());
-  const datasetConversao1 = dados1.map(d => d.conversao || 0);
-  const datasetConversao2 = dados2.map(d => d.conversao || 0);
-
-  const datasetCliques1 = dados1.map(d => d.cliques || 0);
-  const datasetVisualizacoes1 = dados1.map(d => d.visualizacoes || 0);
-
-  const ctxLinha = document.getElementById('graficoLinhaConversao').getContext('2d');
-  const ctxBarras = document.getElementById('graficoBarrasMetricas').getContext('2d');
-
-  // 🧼 Destroi gráficos antigos, se existirem
-  if (window.graficoLinha) window.graficoLinha.destroy();
-  if (window.graficoBarras) window.graficoBarras.destroy();
-
-  // 📈 Gráfico de linha – Conversão
-  window.graficoLinha = new Chart(ctxLinha, {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [
-        {
-          label: `Conversão - ${itemId1}`,
-          data: datasetConversao1,
-          borderColor: 'blue',
-          tension: 0.3
-        },
-        ...(itemId2 ? [{
-          label: `Conversão - ${itemId2}`,
-          data: datasetConversao2,
-          borderColor: 'orange',
-          tension: 0.3
-        }] : [])
-      ]
-    },
-    options: {
-      plugins: {
-        tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y}%` } },
-        title: { display: true, text: 'Evolução da Conversão (%)' }
-      },
-      scales: {
-        y: { beginAtZero: true, title: { display: true, text: '%' } }
-      }
-    }
-  });
-
-  // 📊 Gráfico de barras – Cliques e Visualizações
-  window.graficoBarras = new Chart(ctxBarras, {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [
-        {
-          label: 'Visualizações',
-          data: datasetVisualizacoes1,
-          backgroundColor: 'rgba(54, 162, 235, 0.5)'
-        },
-        {
-          label: 'Cliques',
-          data: datasetCliques1,
-          backgroundColor: 'rgba(255, 206, 86, 0.5)'
-        }
-      ]
-    },
-    options: {
-      plugins: {
-        title: { display: true, text: 'Visualizações x Cliques' },
-        tooltip: { mode: 'index', intersect: false }
-      },
-      responsive: true,
-      interaction: { mode: 'index', intersect: false },
-      scales: { y: { beginAtZero: true } }
-    }
-  });
-}
-
 
   <section id="relatorio" class="tab-section">
     <h2>Relatório</h2>
@@ -217,5 +143,12 @@ async function gerarGraficoEvolucao() {
   <script type="module" src="app.js"></script>
   <script type="module" src="tabs.js"></script>
   <script src="sw-register.js"></script>
+  <script type="module">
+  import { gerarGraficoEvolucao } from './graficoEvolucao.js';
+  import { db } from './firebase-init.js';
+
+  window.gerarGraficoEvolucao = () => gerarGraficoEvolucao(db);
+</script>
+
 </body>
 </html>
