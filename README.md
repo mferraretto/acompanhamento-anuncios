@@ -10,3 +10,6 @@ Antes de executar o aplicativo, garanta que o `firebase.config.js` exista. Caso 
 O `firebase.config.js` está listado no `.gitignore`. **Nunca** envie suas credenciais reais para o repositório.
 
 O arquivo `sw-register.js` registra automaticamente `service-worker.js` quando o navegador oferece suporte. Mantenha esse script referenciado no `index.html` para garantir o funcionamento offline.
+
+Ao carregar `firebase.js`, a instância do Firestore é exposta em `window.db`.
+Os módulos do projeto referenciam esse objeto com `const db = window.db;`.
