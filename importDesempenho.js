@@ -28,42 +28,48 @@ document.getElementById('btnSalvarDesempenho').addEventListener('click', async (
 
   cardsContainer.innerHTML = '';
 
-  for (const row of rows) {
-    const sku = row['Identificação do Produto'] || row['SKU'] || row['Parent SKU'] || '';
-    if (!sku) continue;
+ try {
+    for (const row of rows) {
+      const sku = row['Identificação do Produto'] || row['SKU'] || row['Parent SKU'] || '';
+      if (!sku) continue;
 
-    const dados = {
-      sku,
-      visualizacoes: parseNumber(row['Total de visualizações'] || row['Visualizações'] || 0),
-      cliques: parseNumber(row['Total de cliques'] || row['Cliques'] || 0),
-      vendas: parseNumber(row['Total de pedidos pagos'] || row['Vendas'] || 0),
-      conversao: parseNumber(row['Taxa de conversão (%)'] || row['Conversão (%)'] || 0),
-      receita: parseNumber(row['Valor total do pedido'] || row['Receita'] || 0),
-      dataRegistro: new Date().toISOString()
-    };
 
-    const tr = document.createElement('tr');
-    [dados.sku, dados.visualizacoes, dados.cliques, dados.vendas, dados.conversao, dados.receita].forEach(val => {
-      const td = document.createElement('td');
-      td.textContent = sanitize(val);
-      tr.appendChild(td);
-    });
-    table.appendChild(tr);
+      const dados = {
+        sku,
+        visualizacoes: parseNumber(row['Total de visualizações'] || row['Visualizações'] || 0),
+        cliques: parseNumber(row['Total de cliques'] || row['Cliques'] || 0),
+        vendas: parseNumber(row['Total de pedidos pagos'] || row['Vendas'] || 0),
+        conversao: parseNumber(row['Taxa de conversão (%)'] || row['Conversão (%)'] || 0),
+        receita: parseNumber(row['Valor total do pedido'] || row['Receita'] || 0),
+        dataRegistro: new Date().toISOString()
+      };
 
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.innerHTML = `
-      <h3>${sanitize(sku)}</h3>
-      <p>👁 Visualizações: <strong>${dados.visualizacoes}</strong></p>
-      <p>🖱 Cliques: <strong>${dados.cliques}</strong></p>
-      <p>🛒 Vendas: <strong>${dados.vendas}</strong></p>
-      <p>📈 Conversão: <strong>${dados.conversao}%</strong></p>
-      <p>💰 Receita: <strong>R$ ${dados.receita.toFixed(2)}</strong></p>
-    `;
-    cardsContainer.appendChild(card);
+      const tr = document.createElement('tr');
+      [dados.sku, dados.visualizacoes, dados.cliques, dados.vendas, dados.conversao, dados.receita].forEach(val => {
+        const td = document.createElement('td');
+        td.textContent = sanitize(val);
+        tr.appendChild(td);
+      });
+      table.appendChild(tr);
+       const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <h3>${sanitize(sku)}</h3>
+        <p>👁 Visualizações: <strong>${dados.visualizacoes}</strong></p>
+        <p>🖱 Cliques: <strong>${dados.cliques}</strong></p>
+        <p>🛒 Vendas: <strong>${dados.vendas}</strong></p>
+        <p>📈 Conversão: <strong>${dados.conversao}%</strong></p>
+        <p>💰 Receita: <strong>R$ ${dados.receita.toFixed(2)}</strong></p>
+      `;
+      cardsContainer.appendChild(card);
 
     const payload = removeInvalid(dados);
-    await db.collection('desempenho').doc(sku).set(payload, { merge: true });
+      await db.collection('desempenho').doc(sku).set(payload, { merge: true });
+    }
+  } catch (err) {
+    console.error('Erro ao salvar desempenho', err);
+    alert('Falha ao salvar desempenho');
+    return;
   }
 
   preview.innerHTML = '';
