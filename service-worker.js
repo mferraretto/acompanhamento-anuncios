@@ -32,6 +32,11 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
+   const url = new URL(event.request.url);
+  if (url.hostname.includes('googleapis.com')) {
+    // Let requests to Firestore or other Google APIs go directly to the network
+    return;
+  }
   event.respondWith(
     caches.match(event.request).then(response => response || fetch(event.request))
   );
