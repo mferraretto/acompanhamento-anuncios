@@ -1,0 +1,13 @@
+// firebase.config.example.js
+// Copie este arquivo para firebase.config.js e preencha com as credenciais do seu projeto Firebase.
+const firebaseConfig = {
+ apiKey: "AIzaSyAJHISEca3wibw92Bw6UQCpQuyhtkjAoWE",
+  authDomain: "acompanhamento-anuncios.firebaseapp.com",
+  projectId: "acompanhamento-anuncios",
+  storageBucket: "acompanhamento-anuncios.appspot.com",
+  messagingSenderId: "993424162956",
+  appId: "1:993424162956:web:37bb9a39d8aee076cdfba9"
+};
+
+firebase.initializeApp(firebaseConfig);
+window.db = firebase.firestore();
