@@ -227,12 +227,12 @@ async function loadDesempenho() {
 
     card.innerHTML = `
       <strong>SKU:</strong> ${d.sku || '---'}<br>
-      <strong>Nome:</strong> ${d.nome || '---'}<br>
       <strong>Visualizações:</strong> ${d.visualizacoes || 0}<br>
       <strong>Cliques:</strong> ${d.cliques || 0}<br>
       <strong>Vendas:</strong> ${d.vendas || 0}<br>
-      <strong>CTR:</strong> ${d.ctr || '0%'}<br>
-      <strong>Data:</strong> ${new Date(d.data?.seconds * 1000).toLocaleDateString('pt-BR')}
+      <strong>Conversão:</strong> ${d.conversao || 0}%<br>
+      <strong>Receita:</strong> R$ ${(d.receita ?? 0).toFixed(2)}<br>
+      <strong>Data:</strong> ${new Date(d.dataRegistro).toLocaleDateString('pt-BR')}
     `;
     container.appendChild(card);
   });
