@@ -1,4 +1,4 @@
-let firebaseConfig = typeof window !== 'undefined' && window.firebaseConfig ? window.firebaseConfig : {
+let firebaseConfig = {
   apiKey: "AIzaSyAJHISEca3wibw92Bw6UQCpQuyhtkjAoWE",
   authDomain: "acompanhamento-anuncios.firebaseapp.com",
   projectId: "acompanhamento-anuncios",
@@ -8,4 +8,4 @@ let firebaseConfig = typeof window !== 'undefined' && window.firebaseConfig ? wi
 };
 
 firebase.initializeApp(firebaseConfig);
-window.db = firebase.firestore(); // ✅ torna visível globalmente
+window.db = firebase.firestore(); // ✅ importante para uso em módulos
