@@ -10,7 +10,6 @@ const sections = {
   comparativo: document.getElementById('comparativo'),
  alteracoes: document.getElementById('alteracoes'),
   desempenho: document.getElementById('desempenho')
-
 };
 
 function showSection(id) {
@@ -40,21 +39,22 @@ document.querySelectorAll('#menuTabs button').forEach(btn => {
     }
   });
 });
-
 // Ativar aba "cadastro" por padrão
 document.addEventListener("DOMContentLoaded", () => {
   showSection('cadastro');
 });
 
-
-
 async function loadAnuncios() {
   const container = document.getElementById('listaAnunciosContent');
   const snap = await db.collection('anuncios').get();
+  const desempenhoSnap = await db.collection('desempenho').get();
+
+  const desempenhoMap = {};
+  desempenhoSnap.forEach(doc => desempenhoMap[doc.id] = doc.data());
 
   const table = document.createElement('table');
   const headerRow = document.createElement('tr');
-  ['SKU', 'Nome', 'Descrição', 'Peso', 'Comp.', 'Larg.', 'Altura', 'Imagem de Capa', 'Imagens Extras'].forEach(text => {
+  ['SKU', 'Nome', 'Descrição', 'Peso', 'Comp.', 'Larg.', 'Altura', 'Imagem de Capa', 'Imagens Extras', 'Vendas', 'Visualizações', 'Conversão'].forEach(text => {
     const th = document.createElement('th');
     th.textContent = text;
     headerRow.appendChild(th);
@@ -65,42 +65,23 @@ async function loadAnuncios() {
     const data = doc.data();
     const tr = document.createElement('tr');
 
-    // SKU
-    const skuTd = document.createElement('td');
-    skuTd.textContent = sanitize(doc.id);
-    tr.appendChild(skuTd);
+    const sku = sanitize(doc.id);
+    const desempenho = desempenhoMap[sku] || {};
 
-    // Nome
-    const nomeTd = document.createElement('td');
-    nomeTd.textContent = sanitize(data.name || data.nome || '');
-    tr.appendChild(nomeTd);
+    const createTd = value => {
+      const td = document.createElement('td');
+      td.textContent = sanitize(value);
+      return td;
+    };
 
-    // Descrição
-    const descTd = document.createElement('td');
-    descTd.textContent = sanitize(data.description || '');
-    tr.appendChild(descTd);
+    tr.appendChild(createTd(sku));
+    tr.appendChild(createTd(data.name || data.nome || ''));
+    tr.appendChild(createTd(data.description || ''));
+    tr.appendChild(createTd(data.weight || data.peso || ''));
+    tr.appendChild(createTd(data.length || data.comprimento || ''));
+    tr.appendChild(createTd(data.width || data.largura || ''));
+    tr.appendChild(createTd(data.height || data.altura || ''));
 
-    // Peso
-    const pesoTd = document.createElement('td');
-    pesoTd.textContent = sanitize(data.weight || data.peso || '');
-    tr.appendChild(pesoTd);
-
-    // Comprimento
-    const compTd = document.createElement('td');
-    compTd.textContent = sanitize(data.length || data.comprimento || '');
-    tr.appendChild(compTd);
-
-    // Largura
-    const largTd = document.createElement('td');
-    largTd.textContent = sanitize(data.width || data.largura || '');
-    tr.appendChild(largTd);
-
-    // Altura
-    const altTd = document.createElement('td');
-    altTd.textContent = sanitize(data.height || data.altura || '');
-    tr.appendChild(altTd);
-
-    // Imagem de Capa
     const imgTd = document.createElement('td');
     if (data.main_image || data.imagem) {
       const img = document.createElement('img');
@@ -110,7 +91,6 @@ async function loadAnuncios() {
     }
     tr.appendChild(imgTd);
 
-    // Imagens Extras
     const extrasTd = document.createElement('td');
     const extras = data.secondary_images || [];
     extras.forEach(url => {
@@ -122,13 +102,20 @@ async function loadAnuncios() {
     });
     tr.appendChild(extrasTd);
 
+    tr.appendChild(createTd(desempenho.vendas || 0));
+    tr.appendChild(createTd(desempenho.visualizacoes || 0));
+
+    const conversaoTd = document.createElement('td');
+    conversaoTd.textContent = `${desempenho.conversao || 0}%`;
+    if (desempenho.conversao < 1) conversaoTd.style.color = 'red';
+    tr.appendChild(conversaoTd);
+
     table.appendChild(tr);
   });
 
   container.innerHTML = '';
   container.appendChild(table);
 }
-
 async function loadHistorico() {
   const container = document.getElementById('historicoContent');
   const snap = await db.collection('pedidos').get();
@@ -142,7 +129,7 @@ async function loadHistorico() {
   table.appendChild(headerRow);
   snap.forEach(doc => {
     const d = doc.data();
-   const tr = document.createElement('tr');
+    const tr = document.createElement('tr');
 
     const skuTd = document.createElement('td');
     skuTd.textContent = sanitize(d['SKU']);
@@ -158,7 +145,7 @@ async function loadHistorico() {
 
     table.appendChild(tr);
   });
- container.innerHTML = '';
+  container.innerHTML = '';
   container.appendChild(table);
 }
 async function loadAlteracoes() {
