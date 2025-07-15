@@ -106,16 +106,30 @@ async function loadAnuncios() {
     tr.appendChild(createTd(desempenho.visualizacoes || 0));
 
     const conversaoTd = document.createElement('td');
-    conversaoTd.textContent = `${desempenho.conversao || 0}%`;
-    if (desempenho.conversao < 1) conversaoTd.style.color = 'red';
-    tr.appendChild(conversaoTd);
+    const conversao = desempenho.conversao || 0;
+    conversaoTd.textContent = `${conversao}%`;
 
+    // Cor de alerta
+    if (conversao < 1) {
+      conversaoTd.style.color = 'red';
+    } else if (conversao >= 3) {
+      conversaoTd.style.color = 'green';
+    }
+
+    // Tooltip com data
+    if (desempenho.dataRegistro) {
+      const dataObj = new Date(desempenho.dataRegistro);
+      conversaoTd.title = `Última atualização: ${dataObj.toLocaleDateString('pt-BR')}`;
+    }
+
+    tr.appendChild(conversaoTd);
     table.appendChild(tr);
   });
 
   container.innerHTML = '';
   container.appendChild(table);
 }
+
 async function loadHistorico() {
   const container = document.getElementById('historicoContent');
   const snap = await db.collection('pedidos').get();
