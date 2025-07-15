@@ -53,14 +53,26 @@ document.getElementById('btnSalvarDesempenho').addEventListener('click', async (
       table.appendChild(tr);
        const card = document.createElement('div');
       card.className = 'card';
-      card.innerHTML = `
-        <h3>${sanitize(sku)}</h3>
-        <p>👁 Visualizações: <strong>${dados.visualizacoes}</strong></p>
-        <p>🖱 Cliques: <strong>${dados.cliques}</strong></p>
-        <p>🛒 Vendas: <strong>${dados.vendas}</strong></p>
-        <p>📈 Conversão: <strong>${dados.conversao}%</strong></p>
-        <p>💰 Receita: <strong>R$ ${dados.receita.toFixed(2)}</strong></p>
-      `;
+    
+    const title = document.createElement('h3');
+    title.textContent = sanitize(sku);
+    card.appendChild(title);
+
+    const makeP = (label, value) => {
+      const p = document.createElement('p');
+      p.textContent = label + ' ';
+      const strong = document.createElement('strong');
+      strong.textContent = value;
+      p.appendChild(strong);
+      return p;
+    };
+
+    card.appendChild(makeP('👁 Visualizações:', dados.visualizacoes));
+    card.appendChild(makeP('🖱 Cliques:', dados.cliques));
+    card.appendChild(makeP('🛒 Vendas:', dados.vendas));
+    card.appendChild(makeP('📈 Conversão:', `${dados.conversao}%`));
+    card.appendChild(makeP('💰 Receita:', `R$ ${dados.receita.toFixed(2)}`));
+
       cardsContainer.appendChild(card);
 
     const payload = removeInvalid(dados);
