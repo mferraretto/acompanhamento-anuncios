@@ -1,6 +1,6 @@
 // Increment the cache name whenever cached files change
 // so the service worker installs a fresh cache.
-const CACHE_NAME = 'app-cache-v4';
+const CACHE_NAME = 'app-cache-v3';
 const ASSETS = [
   './',
   './index.html',
@@ -11,10 +11,6 @@ const ASSETS = [
   './importShopee.js',
   './importPedidos.js',
   './importDesempenho.js',
-  './graficoEvolucao.js',
-  './sw-register.js',
-  './logAlteracoes.js',
-  './utils.js',
   './manifest.json',
   './icon-192.png'
 ];

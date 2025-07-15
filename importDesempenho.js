@@ -119,128 +119,74 @@ let chart = null;
 async function carregarItemIds() {
   const snapshot = await db.collection('desempenho').get();
   const unicos = [...new Set(snapshot.docs.map(d => d.data().itemId))];
-
-  // Arrays com os dois selects (original e o segundo para comparação)
-  const selects = [
-    document.getElementById('graficoItemId'),
-    document.getElementById('graficoItemId2')
-  ];
-
-  selects.forEach(select => {
-    select.innerHTML = '<option value="">Selecione</option>';
-    unicos.forEach(id => {
-      const opt = document.createElement('option');
-      opt.value = id;
-      opt.textContent = id;
-      select.appendChild(opt);
-    });
+  selectItemId.innerHTML = '<option value="">Selecione</option>';
+  unicos.forEach(id => {
+    const opt = document.createElement('option');
+    opt.value = id;
+    opt.textContent = id;
+    selectItemId.appendChild(opt);
   });
 }
-
 carregarItemIds();
-
 
 selectItemId.addEventListener('change', renderChart);
 selectPeriodo.addEventListener('change', renderChart);
+
 async function renderChart() {
-  const itemId1 = document.getElementById('graficoItemId').value;
-  const itemId2 = document.getElementById('graficoItemId2').value;
-  const dias = parseInt(document.getElementById('graficoPeriodo').value);
-  if (!itemId1 || !dias) return;
+  const itemId = selectItemId.value;
+  const dias = parseInt(selectPeriodo.value);
+  if (!itemId || !dias) return;
 
   const hoje = new Date();
   const dataLimite = new Date(hoje);
   dataLimite.setDate(hoje.getDate() - dias);
 
-  async function buscarDados(itemId) {
-    const historicoRef = db.collection('desempenho').doc(itemId).collection('historico');
-    const snapshot = await historicoRef
-      .where('dataRegistro', '>=', dataLimite.toISOString())
-      .orderBy('dataRegistro')
-      .get();
-    return snapshot.docs.map(doc => doc.data());
-  }
+  const historicoRef = db.collection('desempenho').doc(itemId).collection('historico');
+const snapshot = await historicoRef
+  .where('dataRegistro', '>=', dataLimite.toISOString())
+  .orderBy('dataRegistro')
+  .get();
 
-  const dados1 = await buscarDados(itemId1);
-  const dados2 = itemId2 ? await buscarDados(itemId2) : [];
+  const dados = snapshot.docs
+    .map(doc => doc.data())
+    .filter(d => new Date(d.dataRegistro) >= dataLimite);
 
-  const labels = [...new Set([...dados1, ...dados2].map(d => new Date(d.dataRegistro).toLocaleDateString()))].sort();
+  const labels = dados.map(d => new Date(d.dataRegistro).toLocaleDateString());
+  const visualizacoes = dados.map(d => d.visualizacoes || 0);
+  const cliques = dados.map(d => d.cliques || 0);
+  const conversao = dados.map(d => parseFloat(d.conversao || 0));
 
-  function mapPorData(dados, campo) {
-    const mapa = {};
-    dados.forEach(d => {
-      const dia = new Date(d.dataRegistro).toLocaleDateString();
-      mapa[dia] = d[campo] || 0;
-    });
-    return labels.map(label => mapa[label] || 0);
-  }
-
-  const datasets = [
-    {
-      label: `👁 Visualizações (${itemId1})`,
-      data: mapPorData(dados1, 'visualizacoes'),
-      backgroundColor: 'rgba(54, 162, 235, 0.5)',
-      stack: 'a',
-    },
-    {
-      label: `🖱 Cliques (${itemId1})`,
-      data: mapPorData(dados1, 'cliques'),
-      backgroundColor: 'rgba(255, 206, 86, 0.5)',
-      stack: 'a',
-    },
-    {
-      label: `📈 Conversão (%) (${itemId1})`,
-      data: mapPorData(dados1, 'conversao'),
-      type: 'line',
-      yAxisID: 'y1',
-      borderColor: 'rgba(75, 192, 192, 1)',
-      borderWidth: 2,
-      fill: false
-    }
-  ];
-
-  if (itemId2) {
-    datasets.push(
-      {
-        label: `👁 Visualizações (${itemId2})`,
-        data: mapPorData(dados2, 'visualizacoes'),
-        backgroundColor: 'rgba(153, 102, 255, 0.5)',
-        stack: 'b',
-      },
-      {
-        label: `🖱 Cliques (${itemId2})`,
-        data: mapPorData(dados2, 'cliques'),
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-        stack: 'b',
-      },
-      {
-        label: `📈 Conversão (%) (${itemId2})`,
-        data: mapPorData(dados2, 'conversao'),
-        type: 'line',
-        yAxisID: 'y1',
-        borderColor: 'rgba(255, 99, 132, 1)',
-        borderWidth: 2,
-        fill: false
-      }
-    );
-  }
-
-  if (chart) chart.destroy();
+  if (chart) chart.destroy(); // Limpa gráfico anterior
 
   chart = new Chart(canvas, {
     type: 'bar',
-    data: { labels, datasets },
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Visualizações',
+          data: visualizacoes,
+          backgroundColor: 'rgba(54, 162, 235, 0.5)',
+        },
+        {
+          label: 'Cliques',
+          data: cliques,
+          backgroundColor: 'rgba(255, 206, 86, 0.5)',
+        },
+        {
+          label: 'Conversão (%)',
+          data: conversao,
+          type: 'line',
+          yAxisID: 'y1',
+          borderColor: 'rgba(75, 192, 192, 1)',
+          borderWidth: 2,
+          fill: false
+        }
+      ]
+    },
     options: {
       responsive: true,
       interaction: { mode: 'index', intersect: false },
-      plugins: {
-        tooltip: {
-          mode: 'index',
-          callbacks: {
-            label: ctx => `${ctx.dataset.label}: ${ctx.formattedValue}`
-          }
-        }
-      },
       scales: {
         y: { beginAtZero: true, title: { display: true, text: 'Volume' } },
         y1: {
@@ -254,5 +200,4 @@ async function renderChart() {
     }
   });
 }
-
 
