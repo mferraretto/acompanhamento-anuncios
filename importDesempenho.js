@@ -109,8 +109,8 @@ await historicoRef.set(payload); // Salva evolução diária
     alert('❌ Falha ao salvar desempenho');
   }
 });
-import Chart from 'chart.js/auto';
-
+// Chart.js already loaded globally via CDN in index.html
+const Chart = window.Chart;
 const selectItemId = document.getElementById('graficoItemId');
 const selectPeriodo = document.getElementById('graficoPeriodo');
 const canvas = document.getElementById('graficoCanvas');
