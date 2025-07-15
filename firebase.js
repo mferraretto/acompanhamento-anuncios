@@ -1,5 +1,8 @@
-let firebaseConfig = {
-  apiKey: "AIzaSyAJHISEca3wibw92Bw6UQCpQuyhtkjAoWE",
+const firebaseConfig =
+  typeof window !== 'undefined' && window.firebaseConfig
+    ? window.firebaseConfig
+    : {
+      apiKey: "AIzaSyAJHISEca3wibw92Bw6UQCpQuyhtkjAoWE",
   authDomain: "acompanhamento-anuncios.firebaseapp.com",
   projectId: "acompanhamento-anuncios",
   storageBucket: "acompanhamento-anuncios.appspot.com",
@@ -8,4 +11,11 @@ let firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-window.db = firebase.firestore(); // ✅ importante para uso em módulos
+const db = firebase.firestore();
+
+// Disponibiliza para códigos legados que esperam window.db
+if (typeof window !== 'undefined') {
+  window.db = db;
+}
+
+export { db };
