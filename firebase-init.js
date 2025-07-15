@@ -1,3 +1,4 @@
+// firebase-init.js
 const firebaseConfig = {
   apiKey: "AIzaSyDovLKo3djdRbs963vqKdbj-geRWyzMTrg",
   authDomain: "acompanhamento-anuncios.firebaseapp.com",
@@ -9,4 +10,5 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-export const db = firebase.firestore(); // ✅ Adicione esta linha
+// Em vez de export, use:
+window.db = firebase.firestore();
