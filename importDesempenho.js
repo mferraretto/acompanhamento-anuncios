@@ -83,7 +83,16 @@ document.getElementById('btnSalvarDesempenho').addEventListener('click', async (
 
       // Salvar no Firebase
       const payload = removeInvalid(dados);
-      await db.collection('desempenho').doc(sku).set(payload, { merge: true });
+const safeSku = sku.replace(/[.#$/\[\]]/g, '-'); // Evita erro de caractere inválido
+const payload = removeInvalid(dados);
+
+// Verificação extra para NaN
+if (isNaN(payload.visualizacoes) || isNaN(payload.cliques) || isNaN(payload.vendas) || isNaN(payload.conversao) || isNaN(payload.receita)) {
+  console.warn(`⚠️ Dados inválidos para SKU: ${sku}`, payload);
+  continue; // pula este item
+}
+
+await db.collection('desempenho').doc(safeSku).set(payload, { merge: true });
     }
 
     preview.innerHTML = '';
