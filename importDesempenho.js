@@ -30,8 +30,12 @@ document.getElementById('btnSalvarDesempenho').addEventListener('click', async (
 
  try {
     for (const row of rows) {
-      const sku = row['Identificação do Produto'] || row['SKU'] || row['Parent SKU'] || '';
-      if (!sku) continue;
+const sku = String(
+      row['Identificação do Produto'] ||
+      row['SKU'] ||
+      row['Parent SKU'] ||
+      ''
+    ).trim();      if (!sku) continue;
 
 
       const dados = {
