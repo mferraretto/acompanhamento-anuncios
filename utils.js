@@ -1,5 +1,12 @@
-export const sanitize = (v) => (v == null ? '' : String(v));
-
+export const sanitize = (v) => {
+  if (v == null) return '';
+  return String(v)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+};
 export const parseNumber = (value) => {
   if (typeof value === 'number') {
     return value;
