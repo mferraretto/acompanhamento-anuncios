@@ -1,4 +1,6 @@
 // graficoEvolucao.js
+import Chart from 'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js';
+
 export async function gerarGraficoEvolucao(db) {
   const itemId1 = document.getElementById('filtroEvolucaoAnuncio1').value;
   const itemId2 = document.getElementById('filtroEvolucaoAnuncio2').value;
