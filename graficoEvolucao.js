@@ -1,5 +1,4 @@
-// graficoEvolucao.js
-export async function gerarGraficoEvolucao() {
+async function gerarGraficoEvolucao() {
   const itemId1 = document.getElementById('filtroEvolucaoAnuncio1').value;
   const itemId2 = document.getElementById('filtroEvolucaoAnuncio2').value;
   const dias = parseInt(document.getElementById('filtroEvolucaoPeriodo').value);
@@ -9,8 +8,6 @@ export async function gerarGraficoEvolucao() {
   const hoje = new Date();
   const dataLimite = new Date(hoje);
   dataLimite.setDate(hoje.getDate() - dias);
-
-  const db = window.db; // ✅ usa o db global inicializado no firebase-init.js
 
   async function buscarDados(itemId) {
     const historicoRef = db.collection('desempenho').doc(itemId).collection('historico');
@@ -92,3 +89,5 @@ export async function gerarGraficoEvolucao() {
     }
   });
 }
+
+window.gerarGraficoEvolucao = gerarGraficoEvolucao;
