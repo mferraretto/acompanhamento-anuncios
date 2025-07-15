@@ -56,3 +56,15 @@ export const removeInvalid = (obj) => {
   }
   return obj;
 };
+export function cleanItem(dado) {
+  // coloque aqui a lógica da sua função
+  // por exemplo:
+  return {
+    itemId: dado.itemId || '',
+    nome: sanitize(dado.nome),
+    visualizacoes: parseNumber(dado.visualizacoes),
+    cliques: parseNumber(dado.cliques),
+    conversao: parseNumber(dado.conversao),
+    dataRegistro: dado.dataRegistro || new Date().toISOString()
+  };
+}
