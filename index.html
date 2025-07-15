@@ -142,12 +142,11 @@
   <script type="module" src="app.js"></script>
   <script type="module" src="tabs.js"></script>
   <script src="sw-register.js"></script>
-  <script type="module">
-  import { gerarGraficoEvolucao } from './graficoEvolucao.js';
-  import { db } from './firebase-init.js';
-
-  window.gerarGraficoEvolucao = () => gerarGraficoEvolucao(db);
+  <script src="graficoEvolucao.js"></script>
+<script>
+  window.gerarGraficoEvolucao = gerarGraficoEvolucao;
 </script>
+
 
 </body>
 </html>
