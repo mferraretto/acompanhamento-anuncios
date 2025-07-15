@@ -111,9 +111,9 @@ await historicoRef.set(payload); // Salva evolução diária
 });
 // Chart.js already loaded globally via CDN in index.html
 const Chart = window.Chart;
-const selectItemId = document.getElementById('graficoItemId');
-const selectPeriodo = document.getElementById('graficoPeriodo');
-const canvas = document.getElementById('graficoCanvas');
+const selectItemId = document.getElementById('selectItemId');
+const selectPeriodo = document.getElementById('selectPeriodo');
+const canvas = document.getElementById('graficoConversao');
 let chart = null;
 
 async function carregarItemIds() {
