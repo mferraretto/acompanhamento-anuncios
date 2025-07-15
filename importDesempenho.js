@@ -105,4 +105,94 @@ document.getElementById('btnSalvarDesempenho').addEventListener('click', async (
     alert('❌ Falha ao salvar desempenho');
   }
 });
+import Chart from 'chart.js/auto';
+
+const selectItemId = document.getElementById('graficoItemId');
+const selectPeriodo = document.getElementById('graficoPeriodo');
+const canvas = document.getElementById('graficoCanvas');
+let chart = null;
+
+async function carregarItemIds() {
+  const snapshot = await db.collection('desempenho').get();
+  const unicos = [...new Set(snapshot.docs.map(d => d.data().itemId))];
+  selectItemId.innerHTML = '<option value="">Selecione</option>';
+  unicos.forEach(id => {
+    const opt = document.createElement('option');
+    opt.value = id;
+    opt.textContent = id;
+    selectItemId.appendChild(opt);
+  });
+}
+carregarItemIds();
+
+selectItemId.addEventListener('change', renderChart);
+selectPeriodo.addEventListener('change', renderChart);
+
+async function renderChart() {
+  const itemId = selectItemId.value;
+  const dias = parseInt(selectPeriodo.value);
+  if (!itemId || !dias) return;
+
+  const hoje = new Date();
+  const dataLimite = new Date(hoje);
+  dataLimite.setDate(hoje.getDate() - dias);
+
+  const snapshot = await db.collection('desempenho')
+    .where('itemId', '==', itemId)
+    .orderBy('dataRegistro')
+    .get();
+
+  const dados = snapshot.docs
+    .map(doc => doc.data())
+    .filter(d => new Date(d.dataRegistro) >= dataLimite);
+
+  const labels = dados.map(d => new Date(d.dataRegistro).toLocaleDateString());
+  const visualizacoes = dados.map(d => d.visualizacoes || 0);
+  const cliques = dados.map(d => d.cliques || 0);
+  const conversao = dados.map(d => parseFloat(d.conversao || 0));
+
+  if (chart) chart.destroy(); // Limpa gráfico anterior
+
+  chart = new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Visualizações',
+          data: visualizacoes,
+          backgroundColor: 'rgba(54, 162, 235, 0.5)',
+        },
+        {
+          label: 'Cliques',
+          data: cliques,
+          backgroundColor: 'rgba(255, 206, 86, 0.5)',
+        },
+        {
+          label: 'Conversão (%)',
+          data: conversao,
+          type: 'line',
+          yAxisID: 'y1',
+          borderColor: 'rgba(75, 192, 192, 1)',
+          borderWidth: 2,
+          fill: false
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      interaction: { mode: 'index', intersect: false },
+      scales: {
+        y: { beginAtZero: true, title: { display: true, text: 'Volume' } },
+        y1: {
+          beginAtZero: true,
+          position: 'right',
+          title: { display: true, text: 'Conversão (%)' },
+          ticks: { callback: v => `${v}%` },
+          grid: { drawOnChartArea: false }
+        }
+      }
+    }
+  });
+}
 
