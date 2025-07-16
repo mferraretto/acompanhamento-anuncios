@@ -62,7 +62,7 @@ if (rawDate) {
         vendas: parseNumber(row['Unidades (Pedido pago)'] || row['Total de pedidos pagos'] || 0),
         conversao: parseNumber(row['Taxa de conversão (Pedido pago)'] || row['Taxa de conversão (%)'] || 0),
         receita: parseNumber(row['Vendas (Pedido pago) (BRL)'] || row['Valor total do pedido'] || 0),
-        dataRegistro: dataRegistroISO(row['DATA'] || 0)
+        dataRegistroISO = dateObj.toISOString();
       };
 
       // Validação básica
