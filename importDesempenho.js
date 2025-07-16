@@ -39,7 +39,7 @@ const rawDate = row['DATA'] || row['Data'] || row['data'];
 let dataRegistroISO = new Date().toISOString(); // fallback padrão
 
 if (rawDate) {
-  if (typeof rawDate === 'string') {
+  if (typeof rawDate === 'string' && rawDate.includes('/')) {
     const [dia, mes, ano] = rawDate.split('/');
     if (dia && mes && ano) {
       const dateObj = new Date(`${ano}-${mes}-${dia}T00:00:00`);
@@ -47,13 +47,8 @@ if (rawDate) {
         dataRegistroISO = dateObj.toISOString();
       }
     }
-} else if (!isNaN(rawDate)) {
-  const excelDate = new Date((Number(rawDate) - 25569) * 86400 * 1000);
-  if (!isNaN(excelDate)) {
-    dataRegistroISO = excelDate.toISOString();
-  }
-}    // Se vier como número do Excel (ex: 45575)
-    const excelDate = new Date((rawDate - 25569) * 86400 * 1000);
+  } else if (!isNaN(rawDate)) {
+    const excelDate = new Date((Number(rawDate) - 25569) * 86400 * 1000);
     if (!isNaN(excelDate)) {
       dataRegistroISO = excelDate.toISOString();
     }
