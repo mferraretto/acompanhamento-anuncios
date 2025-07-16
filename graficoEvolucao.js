@@ -91,3 +91,29 @@ async function gerarGraficoEvolucao() {
 }
 
 window.gerarGraficoEvolucao = gerarGraficoEvolucao;
+
+const selectAnuncio1 = document.getElementById('filtroEvolucaoAnuncio1');
+const selectAnuncio2 = document.getElementById('filtroEvolucaoAnuncio2');
+const selectPeriodoEvolucao = document.getElementById('filtroEvolucaoPeriodo');
+
+async function carregarItemIdsEvolucao() {
+  const snapshot = await db.collection('desempenho').get();
+  const unicos = [...new Set(snapshot.docs.map(d => d.data().itemId))];
+  const buildOptions = (select) => {
+    select.innerHTML = '<option value="">Selecione</option>';
+    unicos.forEach(id => {
+      const opt = document.createElement('option');
+      opt.value = id;
+      opt.textContent = id;
+      select.appendChild(opt);
+    });
+  };
+  buildOptions(selectAnuncio1);
+  buildOptions(selectAnuncio2);
+}
+
+carregarItemIdsEvolucao();
+
+selectAnuncio1.addEventListener('change', gerarGraficoEvolucao);
+selectAnuncio2.addEventListener('change', gerarGraficoEvolucao);
+selectPeriodoEvolucao.addEventListener('change', gerarGraficoEvolucao);
