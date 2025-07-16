@@ -79,7 +79,13 @@ async function loadAnuncios() {
   });
   table.appendChild(headerRow);
 
-  snap.forEach(doc => {
+const docs = snap.docs.slice().sort((a, b) => {
+    const receitaA = desempenhoMap[(a.data().itemId || a.id)]?.receita ?? 0;
+    const receitaB = desempenhoMap[(b.data().itemId || b.id)]?.receita ?? 0;
+    return receitaB - receitaA;
+  });
+
+  docs.forEach(doc => {
     const data = doc.data();
     const tr = document.createElement('tr');
 
