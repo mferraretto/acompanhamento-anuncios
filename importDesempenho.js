@@ -34,7 +34,6 @@ document.getElementById('btnSalvarDesempenho').addEventListener('click', async (
       if (!itemId) continue;
 
       const safeId = itemId.replace(/[.#$/\[\]]/g, '-'); // Firebase-safe ID
-// Converte data da planilha (texto ou número Excel) para formato ISO
 const rawDate = row['DATA'] || row['Data'] || row['data'];
 let dataRegistroISO = new Date().toISOString(); // fallback padrão
 
@@ -55,19 +54,16 @@ if (rawDate) {
   }
 }
 
-
-// Agora sim, constrói o objeto completo com a data correta
-const dados = {
-  itemId,
-  sku,
-  visualizacoes: parseNumber(row['Visualizações da Página do Produto'] || row['Total de visualizações'] || 0),
-  cliques: parseNumber(row['Unidades (adicionar ao carrinho)'] || row['Total de cliques'] || 0),
-  vendas: parseNumber(row['Unidades (Pedido pago)'] || row['Total de pedidos pagos'] || 0),
-  conversao: parseNumber(row['Taxa de conversão (Pedido pago)'] || row['Taxa de conversão (%)'] || 0),
-  receita: parseNumber(row['Vendas (Pedido pago) (BRL)'] || row['Valor total do pedido'] || 0),
-  dataRegistro: dataRegistroISO
-};
-
+      const dados = {
+        itemId,
+        sku,
+        visualizacoes: parseNumber(row['Visualizações da Página do Produto'] || row['Total de visualizações'] || 0),
+        cliques: parseNumber(row['Unidades (adicionar ao carrinho)'] || row['Total de cliques'] || 0),
+        vendas: parseNumber(row['Unidades (Pedido pago)'] || row['Total de pedidos pagos'] || 0),
+        conversao: parseNumber(row['Taxa de conversão (Pedido pago)'] || row['Taxa de conversão (%)'] || 0),
+        receita: parseNumber(row['Vendas (Pedido pago) (BRL)'] || row['Valor total do pedido'] || 0),
+        dataRegistro: dataRegistroISO(row['DATA'] || 0)
+      };
 
       // Validação básica
       if (
@@ -120,8 +116,7 @@ const dados = {
 const desempenhoRef = db.collection('desempenho').doc(safeId);
 await desempenhoRef.set({ itemId, ...payload }, { merge: true });
 
-const dataId = payload.dataRegistro.split('T')[0]; // só a data: yyyy-mm-dd
-const historicoRef = desempenhoRef.collection('historico').doc(dataId);
+const historicoRef = desempenhoRef.collection('historico').doc(payload.dataRegistro);
 await historicoRef.set(payload); // Salva evolução diária
     }
 
@@ -244,7 +239,7 @@ fill: false,
         tooltip: {
           callbacks: {
             label(ctx) {
-              const label = `${ctx.dataset.label}: ${ctx.parsed.y}`;
+             const label = `${ctx.dataset.label}: ${ctx.parsed.y}`;
               const idx = ctx.dataIndex;
               const ds = ctx.datasetIndex;
               const alerts = [alertVisual, alertCliques, alertConv][ds] || [];
@@ -272,4 +267,3 @@ fill: false,
     }
   });
 }
-
