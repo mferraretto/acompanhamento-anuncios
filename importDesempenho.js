@@ -95,7 +95,7 @@ document.getElementById('btnSalvarDesempenho').addEventListener('click', async (
       // Salvar no Firebase usando ID do Item como chave
       const payload = removeInvalid(dados);
 const desempenhoRef = db.collection('desempenho').doc(safeId);
-await desempenhoRef.set({ itemId: safeId }, { merge: true }); // metadados básicos
+await desempenhoRef.set({ itemId: safeId, ...payload }, { merge: true }); // metadados básicos + último registro
 
 const historicoRef = desempenhoRef.collection('historico').doc(payload.dataRegistro);
 await historicoRef.set(payload); // Salva evolução diária
