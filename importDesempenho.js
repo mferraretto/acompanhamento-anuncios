@@ -136,6 +136,8 @@ async function renderChart() {
   const itemId = selectItemId.value;
   const dias = parseInt(selectPeriodo.value);
   if (!itemId || !dias) return;
+    const THRESHOLD = 0.2; // 20%
+
 
   const hoje = new Date();
   const dataLimite = new Date(hoje);
@@ -155,7 +157,24 @@ const snapshot = await historicoRef
   const visualizacoes = dados.map(d => d.visualizacoes || 0);
   const cliques = dados.map(d => d.cliques || 0);
   const conversao = dados.map(d => parseFloat(d.conversao || 0));
+function calcAlertas(arr) {
+    const out = [];
+    for (let i = 0; i < arr.length; i++) {
+      if (i === 0) {
+        out.push(false);
+        continue;
+      }
+      const prev = arr[i - 1];
+      const curr = arr[i];
+      const diff = prev === 0 ? 1 : Math.abs((curr - prev) / prev);
+      out.push(diff > THRESHOLD);
+    }
+    return out;
+  }
 
+  const alertVisual = calcAlertas(visualizacoes);
+  const alertCliques = calcAlertas(cliques);
+  const alertConv = calcAlertas(conversao);
   if (chart) chart.destroy(); // Limpa gráfico anterior
 
   chart = new Chart(canvas, {
@@ -166,12 +185,16 @@ const snapshot = await historicoRef
         {
           label: 'Visualizações',
           data: visualizacoes,
-          backgroundColor: 'rgba(54, 162, 235, 0.5)',
+ backgroundColor: visualizacoes.map((_, i) =>
+            alertVisual[i] ? 'rgba(255, 99, 132, 0.7)' : 'rgba(54, 162, 235, 0.5)'
+          ),
         },
         {
           label: 'Cliques',
           data: cliques,
-          backgroundColor: 'rgba(255, 206, 86, 0.5)',
+backgroundColor: cliques.map((_, i) =>
+            alertCliques[i] ? 'rgba(255, 99, 132, 0.7)' : 'rgba(255, 206, 86, 0.5)'
+          ),
         },
         {
           label: 'Conversão (%)',
@@ -180,13 +203,38 @@ const snapshot = await historicoRef
           yAxisID: 'y1',
           borderColor: 'rgba(75, 192, 192, 1)',
           borderWidth: 2,
-          fill: false
+fill: false,
+          pointBackgroundColor: conversao.map((_, i) =>
+            alertConv[i] ? 'red' : 'rgba(75, 192, 192, 1)'
+          ),
+          pointBorderColor: conversao.map((_, i) =>
+            alertConv[i] ? 'red' : 'rgba(75, 192, 192, 1)'
+          )
         }
       ]
     },
     options: {
       responsive: true,
       interaction: { mode: 'index', intersect: false },
+       plugins: {
+        tooltip: {
+          callbacks: {
+            label(ctx) {
+              const label = `${ctx.dataset.label}: ${ctx.parsed.y}`;
+              const idx = ctx.dataIndex;
+              const ds = ctx.datasetIndex;
+              const alerts = [alertVisual, alertCliques, alertConv][ds] || [];
+              if (alerts[idx]) {
+                const prev = ds === 0 ? visualizacoes[idx - 1] : ds === 1 ? cliques[idx - 1] : conversao[idx - 1];
+                const diff = prev ? ((ctx.parsed.y - prev) / prev) * 100 : 100;
+                const sign = diff > 0 ? '+' : '';
+                return `${label} (Alerta: ${sign}${diff.toFixed(1)}% vs dia anterior)`;
+              }
+              return label;
+            }
+          }
+        }
+      },
       scales: {
         y: { beginAtZero: true, title: { display: true, text: 'Volume' } },
         y1: {
