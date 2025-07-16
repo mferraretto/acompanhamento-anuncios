@@ -34,19 +34,32 @@ document.getElementById('btnSalvarDesempenho').addEventListener('click', async (
       if (!itemId) continue;
 
       const safeId = itemId.replace(/[.#$/\[\]]/g, '-'); // Firebase-safe ID
-// Converte "09/07/2025" da planilha para formato ISO
+// Converte data da planilha (texto ou número Excel) para formato ISO
 const rawDate = row['DATA'] || row['Data'] || row['data'];
-let dataRegistroISO = new Date().toISOString(); // fallback se a data estiver ausente
+let dataRegistroISO = new Date().toISOString(); // fallback padrão
 
-if (rawDate && typeof rawDate === 'string') {
-  const [dia, mes, ano] = rawDate.split('/');
-  if (dia && mes && ano) {
-    const dateObj = new Date(`${ano}-${mes}-${dia}T00:00:00`);
-    if (!isNaN(dateObj)) {
-      dataRegistroISO = dateObj.toISOString();
+if (rawDate) {
+  if (typeof rawDate === 'string') {
+    const [dia, mes, ano] = rawDate.split('/');
+    if (dia && mes && ano) {
+      const dateObj = new Date(`${ano}-${mes}-${dia}T00:00:00`);
+      if (!isNaN(dateObj)) {
+        dataRegistroISO = dateObj.toISOString();
+      }
+    }
+} else if (!isNaN(rawDate)) {
+  const excelDate = new Date((Number(rawDate) - 25569) * 86400 * 1000);
+  if (!isNaN(excelDate)) {
+    dataRegistroISO = excelDate.toISOString();
+  }
+}    // Se vier como número do Excel (ex: 45575)
+    const excelDate = new Date((rawDate - 25569) * 86400 * 1000);
+    if (!isNaN(excelDate)) {
+      dataRegistroISO = excelDate.toISOString();
     }
   }
 }
+
 
 // Agora sim, constrói o objeto completo com a data correta
 const dados = {
@@ -112,7 +125,8 @@ const dados = {
 const desempenhoRef = db.collection('desempenho').doc(safeId);
 await desempenhoRef.set({ itemId, ...payload }, { merge: true });
 
-const historicoRef = desempenhoRef.collection('historico').doc(payload.dataRegistro);
+const dataId = payload.dataRegistro.split('T')[0]; // só a data: yyyy-mm-dd
+const historicoRef = desempenhoRef.collection('historico').doc(dataId);
 await historicoRef.set(payload); // Salva evolução diária
     }
 
