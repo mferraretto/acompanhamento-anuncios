@@ -34,20 +34,9 @@ document.getElementById('btnSalvarDesempenho').addEventListener('click', async (
       if (!itemId) continue;
 
       const safeId = itemId.replace(/[.#$/\[\]]/g, '-'); // Firebase-safe ID
-
-      const dados = {
-        itemId,
-        sku,
-        visualizacoes: parseNumber(row['Visualizações da Página do Produto'] || row['Total de visualizações'] || 0),
-        cliques: parseNumber(row['Unidades (adicionar ao carrinho)'] || row['Total de cliques'] || 0),
-        vendas: parseNumber(row['Unidades (Pedido pago)'] || row['Total de pedidos pagos'] || 0),
-        conversao: parseNumber(row['Taxa de conversão (Pedido pago)'] || row['Taxa de conversão (%)'] || 0),
-        receita: parseNumber(row['Vendas (Pedido pago) (BRL)'] || row['Valor total do pedido'] || 0),
-        dados.dataRegistro = dataRegistroISO;
-/// Converte "09/07/2025" para objeto Date válido
-// Converte "09/07/2025" para ISO e adiciona ao objeto dados
-const rawDate = row['DATA']; // ou use 'Data' ou 'data' se necessário
-let dataRegistroISO = new Date().toISOString(); // padrão se não achar a data
+// Converte "09/07/2025" da planilha para formato ISO
+const rawDate = row['DATA'] || row['Data'] || row['data'];
+let dataRegistroISO = new Date().toISOString(); // fallback se a data estiver ausente
 
 if (rawDate && typeof rawDate === 'string') {
   const [dia, mes, ano] = rawDate.split('/');
@@ -59,7 +48,7 @@ if (rawDate && typeof rawDate === 'string') {
   }
 }
 
-// Objeto com todos os dados
+// Agora sim, constrói o objeto completo com a data correta
 const dados = {
   itemId,
   sku,
@@ -71,7 +60,6 @@ const dados = {
   dataRegistro: dataRegistroISO
 };
 
-      };
 
       // Validação básica
       if (
