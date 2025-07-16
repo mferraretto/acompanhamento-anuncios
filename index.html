@@ -64,7 +64,26 @@
 
   <section id="evolucao" class="tab-section">
     <h2>Evolução</h2>
-    <p>Em desenvolvimento...</p>
+ <div class="row">
+      <div class="col-md-4">
+        <label for="filtroEvolucaoAnuncio1">Anúncio 1:</label>
+        <select id="filtroEvolucaoAnuncio1" class="form-control"></select>
+      </div>
+      <div class="col-md-4">
+        <label for="filtroEvolucaoAnuncio2">Anúncio 2 (opcional):</label>
+        <select id="filtroEvolucaoAnuncio2" class="form-control"></select>
+      </div>
+      <div class="col-md-4">
+        <label for="filtroEvolucaoPeriodo">Período:</label>
+        <select id="filtroEvolucaoPeriodo" class="form-control">
+          <option value="7">Últimos 7 dias</option>
+          <option value="30" selected>Últimos 30 dias</option>
+          <option value="90">Últimos 90 dias</option>
+        </select>
+      </div>
+    </div>
+    <canvas id="graficoLinhaConversao" class="my-4" height="120"></canvas>
+    <canvas id="graficoBarrasMetricas" class="my-4" height="120"></canvas>
   </section>
 
   <section id="relatorio" class="tab-section">
@@ -118,6 +137,7 @@
   <script type="module" src="importDesempenho.js"></script>
   <script type="module" src="app.js"></script>
   <script type="module" src="tabs.js"></script>
+  <script type="module" src="graficoEvolucao.js"></script>
   <script src="sw-register.js"></script>
 </body>
 </html>
